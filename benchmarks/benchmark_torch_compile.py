@@ -5,6 +5,14 @@ from tqdm import tqdm
 import torch._inductor.config
 import triton
 import triton.language as tl
+import os
+from pathlib import Path
+
+# Obtener la ruta absoluta del directorio donde está este script
+script_dir = Path(__file__).parent.resolve()
+
+# Cambiar el directorio de trabajo actual a la carpeta del script
+os.chdir(script_dir)
 
 # --- 1. CONFIGURACIÓN EXTREMA DEL ENTORNO Y HARDWARE ---
 device = torch.device("cuda")

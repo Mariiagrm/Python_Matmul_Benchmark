@@ -5,6 +5,14 @@ from tqdm import tqdm
 import torch._inductor.config
 import triton
 import triton.language as tl
+import os
+from pathlib import Path
+
+# Obtener la ruta absoluta del directorio donde está este script
+script_dir = Path(__file__).parent.resolve()
+
+# Cambiar el directorio de trabajo actual a la carpeta del script
+os.chdir(script_dir)
 
 # --- 1. CONFIGURACIÓN EXTREMA DEL ENTORNO Y HARDWARE ---
 device = torch.device("cuda")
@@ -124,17 +132,17 @@ def run_specific_benchmarks():
     results = []
     
     # --- DEFINICIÓN DE CASOS ---
-    dims_base = [ 8192] 
+    dims_base = [ 32768] 
 
     
     # Benchmark 1: Matrices Cuadradas
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
     
-    # Benchmark 2: K fijo (8192)
-    K_fixed = 8192
+    # Benchmark 2: K fijo (32768)
+    K_fixed = 32768
     bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
 
-    all_tasks = bench_1_combs + bench_2_combs
+    all_tasks = bench_1_co, obligando a arreglarla reemplazando la lógica condicional por alternativas compatibles con grafos, como torch.where.mbs + bench_2_combs
     
     print(f"🖥️  GPU: {torch.cuda.get_device_name(0)}")
     print(f"🚀 Modo: torch.compile(max-autotune, fullgraph=True, dynamic=False)")
@@ -210,5 +218,5 @@ if __name__ == "__main__":
     print("\n--- Resultados: Matrices Cuadradas ---")
     print(df[df["Type"] == "Square"].to_markdown(index=False))
     
-    print("\n--- Resultados: K Fijo (8192) ---")
+    print("\n--- Resultados: K Fijo (32768) ---")
     print(df[df["Type"] == "Fixed_K"].sort_values("TFLOPS", ascending=False).head(5).to_markdown(index=False))

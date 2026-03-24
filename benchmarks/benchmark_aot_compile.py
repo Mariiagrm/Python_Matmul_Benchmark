@@ -6,6 +6,14 @@ from tqdm import tqdm
 from torch.export import export
 import torch._inductor
 from torch._inductor.package import load_package
+import os
+from pathlib import Path
+
+# Obtener la ruta absoluta del directorio donde está este script
+script_dir = Path(__file__).parent.resolve()
+
+# Cambiar el directorio de trabajo actual a la carpeta del script
+os.chdir(script_dir)
 
 # --- 1. CONFIGURACIÓN DE PRECISIÓN Y BACKEND ---
 device = torch.device("cuda")

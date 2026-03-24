@@ -6,7 +6,14 @@ from tqdm import tqdm
 from torch.export import export
 import torch._inductor
 from torch._inductor.package import load_package
+import os
+from pathlib import Path
 
+# Obtener la ruta absoluta del directorio donde está este script
+script_dir = Path(__file__).parent.resolve()
+
+# Cambiar el directorio de trabajo actual a la carpeta del script
+os.chdir(script_dir)
 # --- 1. CONFIGURACIÓN DE PRECISIÓN Y BACKEND ---
 device = torch.device("cuda")
 torch._logging.set_logs(output_code=True)
@@ -53,10 +60,10 @@ class MatMulModel(torch.nn.Module):
 
 def run_exhaustive_benchmark():
     # --- DEFINICIÓN DE CASOS ---
-    dims_base = [ 8192] 
+    dims_base = [ 32768] 
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
     
-    K_fixed = 8192
+    K_fixed = 32768
     bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
 
     all_tasks = bench_1_combs + bench_2_combs
@@ -118,7 +125,7 @@ def run_exhaustive_benchmark():
             end = torch.cuda.Event(enable_timing=True)
 
             # Ajuste de iteraciones para no eternizar tamaños 32k
-            iters = 100 if (M*N*K) < (8192**3) else 10
+            iters = 100 if (M*N*K) < (32768**3) else 10
             
             start.record()
             for _ in range(iters):

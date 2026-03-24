@@ -3,7 +3,14 @@ import pandas as pd
 import itertools
 import time
 from tqdm import tqdm
+import os
+from pathlib import Path
 
+# Obtener la ruta absoluta del directorio donde está este script
+script_dir = Path(__file__).parent.resolve()
+
+# Cambiar el directorio de trabajo actual a la carpeta del script
+os.chdir(script_dir)
 # --- Configuración para RTX 4090 ---
 torch.backends.cuda.matmul.allow_fp16_accumulation = True
 torch.backends.cudnn.benchmark = True
