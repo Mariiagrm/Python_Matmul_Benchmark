@@ -50,18 +50,18 @@ echo "✅ Completado: Torch JIT Compile"
 echo "--------------------------------------------------------"
 
 echo "▶️  Ejecutando: FP16 CUDA Benchmark"
-bash benchmarks/ejecutador_cuda.sh
+bash benchmarks/cuda_executor.sh
 echo "✅ Completado: FP16 CUDA"
 echo "--------------------------------------------------------"
 
 # 4. Procesamiento de datos y visualización
 echo "▶️  Ejecutando: Ordenación de Benchmarks"
-python utils/ordenarBenchmark.py
+python utils/sortBenchmarks.py
 echo "✅ Completado: Datos ordenados"
 echo "--------------------------------------------------------"
 
 echo "▶️  Ejecutando: Generación de Gráficas"
-python utils/crearGrafica.py
+python utils/plotCreate.py
 echo "✅ Completado: Gráficas creadas"
 echo "--------------------------------------------------------"
 

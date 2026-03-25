@@ -1,4 +1,5 @@
-Type,M,N,K,Time_ms,TFLOPS,Mode,Precision
+TypeMaria20041590
+M,N,K,Time_ms,TFLOPS,Mode,Precision
 Fixed_K,2046,2046,8192,0.218757,313.523,rtx4090_benchmark_cuda,
 Fixed_K,2046,2046,8192,0.2234582328796386,306.92681876233274,rtx4090_pytorch_eager_specific,
 Square,32768,32768,32768,235.171,299.224,rtx4090_benchmark_cuda,

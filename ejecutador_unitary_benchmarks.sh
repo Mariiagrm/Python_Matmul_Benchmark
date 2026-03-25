@@ -50,7 +50,8 @@ echo "✅ Completado: Torch JIT Compile"
 echo "--------------------------------------------------------"
 
 echo "▶️  Ejecutando: FP16 CUDA Benchmark"
-bash unitary_benchmarks/ejecutador_cuda.sh
+bash unitary_benchmarks/cuda_executor.sh
+
 echo "✅ Completado: FP16 CUDA"
 echo "--------------------------------------------------------"
 
