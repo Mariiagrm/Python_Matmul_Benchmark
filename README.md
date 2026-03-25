@@ -18,7 +18,6 @@ Designed to maintain sustained arithmetic intensity. The internal dimension was 
 ## 🛠️ Requirements and Dependencies
 **Runoff Environment:**
 - NVIDIA Container Toolkit: Required to expose the GPUs to the Docker container.
-- Software Dependencies (Contained in the Docker image):
 - Base Image: nvcr.io/nvidia/pytorch:23.11-py3 (Includes CUDA 12.0 and PyTorch 2.0+ pre-configured).
 
 **Build Toolchain:**
