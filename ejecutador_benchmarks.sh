@@ -65,5 +65,14 @@ python utils/plotCreate.py
 echo "✅ Completado: Gráficas creadas"
 echo "--------------------------------------------------------"
 
+
+
+echo "▶️  Ejecutando: Nvidia Nsight para .nsys-rep"
+ nsys profile -t cuda,osrt,nvtx --gpu-metrics-device=all -o  ./nvidia_nsight/perfil_aot_nsys.nsys-rep python ./unitary_benchmarks/benchmark_torch_compile.py
+ nsys profile -t cuda,osrt,nvtx --gpu-metrics-device=all -o  ./nvidia_nsight/perfil_eager_nsys python ./unitary_benchmarks/benchmark_fp16_fp16.py
+ nsys profile -t cuda,osrt,nvtx --gpu-metrics-device=all -o  ./nvidia_nsight/perfil_jit_nsys python ./unitary_benchmarks/benchmark_torch_compile.py
+echo "✅ Completado: Gráficas creadas"
+echo "--------------------------------------------------------"
+
 # 5. Fin del script (El 'trap' del inicio se encargará de resetear los relojes automáticamente)
 echo " Todo el flujo (benchmarks + gráficas) ha finalizado con éxito."
