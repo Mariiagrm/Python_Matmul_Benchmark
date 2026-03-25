@@ -3,6 +3,8 @@
 This repository documents a comprehensive study to achieve the peak performance of the Ada Lovelace architecture (RTX 4090) in matrix multiplication operations (GEMM).
 
 We compared the performance of different PyTorch compilation strategies (Eager, JIT, AOT) against native C++/CUDA implementations (cuBLAS).
+- **First Version**: FP16/FP32
+- **Second Version**: FP16/FP16
 
 ## 🔬 Testing Methodology
 To ensure accurate measurements and avoid thermal throttling, all matrices were initialized to 0. Random data increases transistor switching activity, forcing the hardware to reduce clock frequencies due to power limitations.
@@ -76,6 +78,10 @@ To launch the complete benchmark suite, simply run the master script from the pr
 - dynamic=False: Disables dynamic shape inference to ensure maximum performance (assumes static sizes).
 
 **4. PyTorch AOT (benchmark_aot_compile.py):** Pre-compilation. Uses fullgraph=True to ensure that 100% of the model is compiled on the GPU, silently preventing any return to the Python interpreter.
+
+## V1: Results
+
+## V2: Results
 
 ![results_scuare](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/plots/compare_tflops_square.png)
 
