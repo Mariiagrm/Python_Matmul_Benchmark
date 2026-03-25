@@ -79,7 +79,7 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 **4. PyTorch AOT (benchmark_aot_compile.py):** Pre-compilation. Uses fullgraph=True to ensure that 100% of the model is compiled on the GPU, silently preventing any return to the Python interpreter.
 
-## **Second Version**: FP16/FP32
+## **First Version**: FP16/FP32
 
 ## **Second Version**: FP16/FP16
 
