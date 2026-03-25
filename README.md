@@ -32,32 +32,32 @@ Designed to maintain sustained arithmetic intensity. The internal dimension was 
 📂 Project Structure
 
 
-.
-├── benchmarks/
-│   ├── aoti_compiled_models/
-│   ├── benchmark_aot_compile.py     # Static Compilation (Ahead-Of-Time)
-│   ├── benchmark_fp16.cu            # Native CUDA/cuBLAS Implementation
-│   ├── benchmark_fp16               # Compiled CUDA Executable
-│   ├── benchmark_fp16_fp16.py       # Classic PyTorch Mode (Eager)
-│   ├── benchmark_torch_compile.py   # Dynamic Compilation (JIT/Dynamo)
-│   ├── CUBLAScomparation/           # [TODO]
-│   ├── cuda_executor.sh             # Exclusive launcher script for CUDA
-│   └── login/
-│       ├── AOT_records.py
-│       └── JIT_records.py
-├── benchmark_executor.sh            # Master script to launch all tests
-├── plots/                           # Automatically generated graphs
-│   ├── tflops_fixed_k_comparative.png
-│   └── tflops_square_comparative.png
-├── results/                         # CSV files with raw data
-│   ├── full_benchmarks.csv
-│   ├── rtx4090_benchmark_cuda.csv
-│   ├── rtx4090_benchmark_jit_specific.csv
-│   ├── rtx4090_pytorch_eager_specific.csv
-│   └── rtx4090_torch_aoti_benchmark.csv
-└── utilities/
-    ├── createGraph.py               # Script for data visualization
-    └── sortBenchmark.py             # Script for cleaning and sorting CSVs
+    .
+    ├── benchmarks/
+    │   ├── aoti_compiled_models/
+    │   ├── benchmark_aot_compile.py     # Static Compilation (Ahead-Of-Time)
+    │   ├── benchmark_fp16.cu            # Native CUDA/cuBLAS Implementation
+    │   ├── benchmark_fp16               # Compiled CUDA Executable
+    │   ├── benchmark_fp16_fp16.py       # Classic PyTorch Mode (Eager)
+    │   ├── benchmark_torch_compile.py   # Dynamic Compilation (JIT/Dynamo)
+    │   ├── CUBLAScomparation/           # [TODO]
+    │   ├── cuda_executor.sh             # Exclusive launcher script for CUDA
+    │   └── login/
+    │       ├── AOT_records.py
+    │       └── JIT_records.py
+    ├── benchmark_executor.sh            # Master script to launch all tests
+    ├── plots/                           # Automatically generated graphs
+    │   ├── tflops_fixed_k_comparative.png
+    │   └── tflops_square_comparative.png
+    ├── results/                         # CSV files with raw data
+    │   ├── full_benchmarks.csv
+    │   ├── rtx4090_benchmark_cuda.csv
+    │   ├── rtx4090_benchmark_jit_specific.csv
+    │   ├── rtx4090_pytorch_eager_specific.csv
+    │   └── rtx4090_torch_aoti_benchmark.csv
+    └── utilities/
+        ├── createGraph.py               # Script for data visualization
+        └── sortBenchmark.py             # Script for cleaning and sorting CSVs
     
     
 ## 🚀 How to Run
