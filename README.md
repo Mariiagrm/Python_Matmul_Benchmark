@@ -77,9 +77,9 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 **4. PyTorch AOT (benchmark_aot_compile.py):** Pre-compilation. Uses fullgraph=True to ensure that 100% of the model is compiled on the GPU, silently preventing any return to the Python interpreter.
 
-![results_scuare](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/plots/comparativa_tflops_square.png)
+![results_scuare](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/plots/compare_tflops_square.png)
 
-![results_fixed_k](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/plots/comparativa_tflops_fixed_k.png)
+![results_fixed_k](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/plots/compare_tflops_fixed_k.png)
 
 | Type     | M     | N     | K     | Time_ms           | TFLOPS              | Mode                               |
 |----------|-------|-------|-------|-------------------|---------------------|------------------------------------|
