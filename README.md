@@ -116,3 +116,28 @@ Square|8192|8192|8192|4.326647644042969|254.1255304877516|rtx4090_pytorch_eager_
 Fixed_K|4096|4096|8192|1.082449951171875|253.9405232051731|rtx4090_torch_aoti_benchmark|
 Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager_specific|
 
+## Resultados Eager
+
+![Eager Memory](images/eager_memory.png)
+![Eager Warp v2](images/EAGER_warp(v2).png)
+![GPU Speed of Light Eager](images/GPU_speedofLight_eager.png)
+![PM Sampling Eager](images/PM_sampling_eager.png)
+
+---
+
+## Resultados JIT
+
+![JIT Memory](images/jit_memory.png)
+![JIT Warp v2](images/JIT_warp(v2).png)
+![GPU Speed of Light JIT](images/GPU_speedOfLight_jit.png)
+![PM Sampling JIT](images/PM_sampling_jit.png)
+
+---
+
+## Resultados AOT
+
+![AOT Memory](images/aot_memory.png)
+![AOT Warp v2](images/AOT_warp(v2).png)
+![GPU Speed of Light AOT](images/GPU_speedOfLight_aot.png)
+![PM Sampling AOT](images/PM_sampling_aot.png)
+
