@@ -132,14 +132,14 @@ def run_specific_benchmarks():
     results = []
     
     # --- DEFINICIÓN DE CASOS ---
-    dims_base = [ 32768] 
+    dims_base = [ 8192] 
 
     
     # Benchmark 1: Matrices Cuadradas
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
     
-    # Benchmark 2: K fijo (32768)
-    K_fixed = 32768
+    # Benchmark 2: K fijo (8192)
+    K_fixed = 8192
     bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
 
     all_tasks = bench_1_combs + bench_2_combs
@@ -165,10 +165,11 @@ def run_specific_benchmarks():
             
             # --- Para PERFILADO ---
             print("Capturando kernels...")
-            torch.cuda.nvtx.range_push("profile_section")
-            output = model_compiled(data)
+            output = fast_matmul(a,b)
             torch.cuda.synchronize() # Espera a que la GPU termine antes de cerrar el rango
             torch.cuda.nvtx.range_pop()
+
+
 
             # --- 5. MEDICIÓN (Aislada del compilador) ---
             start = torch.cuda.Event(enable_timing=True)
@@ -222,5 +223,5 @@ if __name__ == "__main__":
     print("\n--- Resultados: Matrices Cuadradas ---")
     print(df[df["Type"] == "Square"].to_markdown(index=False))
     
-    print("\n--- Resultados: K Fijo (32768) ---")
+    print("\n--- Resultados: K Fijo (8192) ---")
     print(df[df["Type"] == "Fixed_K"].sort_values("TFLOPS", ascending=False).head(5).to_markdown(index=False))

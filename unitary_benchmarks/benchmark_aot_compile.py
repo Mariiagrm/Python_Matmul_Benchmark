@@ -60,10 +60,10 @@ class MatMulModel(torch.nn.Module):
 
 def run_exhaustive_benchmark():
     # --- DEFINICIÓN DE CASOS ---
-    dims_base = [ 32768] 
+    dims_base = [ 8192] 
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
     
-    K_fixed = 32768
+    K_fixed = 8192
     bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
 
     all_tasks = bench_1_combs + bench_2_combs
@@ -122,9 +122,10 @@ def run_exhaustive_benchmark():
             # --- Para PERFILADO ---
             print("Capturando kernels...")
             torch.cuda.nvtx.range_push("profile_section")
-            output = model_compiled(data)
+            output = fast_matmul(a, b)
             torch.cuda.synchronize() # Espera a que la GPU termine antes de cerrar el rango
             torch.cuda.nvtx.range_pop()
+
 
             # --- MEDICIÓN ---
             start = torch.cuda.Event(enable_timing=True)

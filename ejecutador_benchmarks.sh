@@ -75,10 +75,10 @@ echo "✅ Completado: Creado .nsys-rep"
 echo "--------------------------------------------------------"
 
 echo "▶️  Ejecutando: NCU para arquitectura hardware"
- ncu --set full --nvtx --nvtx-include "./nvidia_nsight/ncu_aot" -o profile_report_aot  python ./unitary_benchmarks/benchmark_aot_compile.py
- ncu --target-processes all --nvtx --set full --replay-mode range -o profile_report_eager  -f python ./unitary_benchmarks/benchmark_fp16_fp16.py
- ncu --set full --nvtx --nvtx-include "./nvidia_nsight/ncu_jit" -o profile_report_jit  python ./unitary_benchmarks/benchmark_torch_compile.py
-echo "✅ Completado: Creado .nsys-rep"
+ncu --target-processes all --nvtx --set full -o  profile_report_aot -f python ./unitary_benchmarks/benchmark_aot_compile.py
+ncu --target-processes all --nvtx --set full  -o profile_report_eager  -f python ./unitary_benchmarks/benchmark_fp16_fp16.py
+ncu --set full  -c 5  -o profile_report_jit -f python ./unitary_benchmarks/benchmark_torch_compile.py
+echo "✅ Completado: Creado .ncu-rep"
 echo "--------------------------------------------------------"
 
 # 5. Fin del script (El 'trap' del inicio se encargará de resetear los relojes automáticamente)

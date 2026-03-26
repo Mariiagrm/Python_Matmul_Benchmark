@@ -39,15 +39,15 @@ def run_specific_benchmarks():
     # Lista de dimensiones base
     # Nota: 2046 no es potencia de 2. Para máximo rendimiento se suele usar 2048.
     # Pero he dejado 2046 tal como pediste.
-    dims_base = [ 32768] 
+    dims_base = [ 8192] 
     
     # Benchmark 1: Matrices Cuadradas (M = N = K)
     # Genera: (1024,1024,1024), (2046,2046,2046)...
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
     
-    # Benchmark 2: M y N varían, K fijo en 32768
-    # Genera: (1024, 1024, 32768), (1024, 2046, 32768)...
-    K_fixed = 32768
+    # Benchmark 2: M y N varían, K fijo en 8192
+    # Genera: (1024, 1024, 8192), (1024, 2046, 8192)...
+    K_fixed = 8192
     bench_2_combs = []
     # Producto cartesiano solo de M y N
     #mn_combs = list(itertools.product(dims_base, dims_base)) 
@@ -137,6 +137,6 @@ if __name__ == "__main__":
     print("\n--- Resultados: Matrices Cuadradas ---")
     print(df[df["Type"] == "Square"].to_markdown(index=False))
     
-    print("\n--- Resultados: K Fijo (32768) ---")
+    print("\n--- Resultados: K Fijo (8192) ---")
     # Mostramos los mejores 5 del segundo benchmark
     print(df[df["Type"] == "Fixed_K"].sort_values("TFLOPS", ascending=False).head(5).to_markdown(index=False))

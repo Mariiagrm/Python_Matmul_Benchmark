@@ -19,7 +19,7 @@ fi
 echo "Type,M,N,K,Time_ms,TFLOPS" > "$OUTPUT_FILE"
 
 # Lista de dimensiones
-dims_base=( 32768 )
+dims_base=( 8192 )
 
 echo "🚀 Iniciando Benchmark... Los datos se guardarán en $OUTPUT_FILE"
 
@@ -50,7 +50,7 @@ for d in "${dims_base[@]}"; do
 done
 
 # --- TAREA 2: K Fijo ---
-K_FIXED=32768
+K_FIXED=8192
 echo -e "\n🔹 Procesando Tarea 2 (K=$K_FIXED)..."
 for i in "${dims_base[@]}"; do
     echo "   -> Ejecutando M=$i, N=$i"

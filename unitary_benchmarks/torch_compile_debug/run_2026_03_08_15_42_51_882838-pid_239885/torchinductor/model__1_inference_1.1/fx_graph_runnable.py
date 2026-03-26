@@ -71,9 +71,9 @@ class Repro(torch.nn.Module):
         
 def load_args(reader):
     reader.symint(8192)  # arg0_1
-    buf0 = reader.storage(None, 32768*s0, device=device(type='cuda', index=0), dtype_hint=torch.float16)
+    buf0 = reader.storage(None, 8192*s0, device=device(type='cuda', index=0), dtype_hint=torch.float16)
     reader.tensor(buf0, (s0, 16384), dtype=torch.float16, is_leaf=True)  # arg1_1
-    buf1 = reader.storage(None, 32768*s0, device=device(type='cuda', index=0), dtype_hint=torch.float16)
+    buf1 = reader.storage(None, 8192*s0, device=device(type='cuda', index=0), dtype_hint=torch.float16)
     reader.tensor(buf1, (16384, s0), dtype=torch.float16, is_leaf=True)  # arg2_1
 load_args._version = 0
 mod = Repro()
