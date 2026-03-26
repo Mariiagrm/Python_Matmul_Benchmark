@@ -142,8 +142,7 @@ def run_specific_benchmarks():
     K_fixed = 32768
     bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
 
-    all_tasks = bench_1_co, obligando a arreglarla reemplazando la lógica condicional por alternativas compatibles con grafos, como torch.where.mbs + bench_2_combs
-    
+    all_tasks = bench_1_combs + bench_2_combs
     print(f"🖥️  GPU: {torch.cuda.get_device_name(0)}")
     print(f"🚀 Modo: torch.compile(max-autotune, fullgraph=True, dynamic=False)")
     print(f"📊 Ejecutando {len(all_tasks)} pruebas específicas...")
@@ -164,13 +163,18 @@ def run_specific_benchmarks():
                 #fast_matmul(a, b)
                 triton_matmul(a,b)
             
-            torch.cuda.synchronize()
+            # --- Para PERFILADO ---
+            print("Capturando kernels...")
+            torch.cuda.nvtx.range_push("profile_section")
+            output = model_compiled(data)
+            torch.cuda.synchronize() # Espera a que la GPU termine antes de cerrar el rango
+            torch.cuda.nvtx.range_pop()
 
             # --- 5. MEDICIÓN (Aislada del compilador) ---
             start = torch.cuda.Event(enable_timing=True)
             end = torch.cuda.Event(enable_timing=True)
 
-            iters = 100 #if (M*N*K) < (4096**3) else 20
+            iters = 2 #if (M*N*K) < (4096**3) else 20
             
             start.record()
             for _ in range(iters):

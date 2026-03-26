@@ -118,14 +118,20 @@ def run_exhaustive_benchmark():
             for _ in range(10):
                 fast_matmul(a, b)
             
-            torch.cuda.synchronize()
+            
+            # --- Para PERFILADO ---
+            print("Capturando kernels...")
+            torch.cuda.nvtx.range_push("profile_section")
+            output = model_compiled(data)
+            torch.cuda.synchronize() # Espera a que la GPU termine antes de cerrar el rango
+            torch.cuda.nvtx.range_pop()
 
             # --- MEDICIÓN ---
             start = torch.cuda.Event(enable_timing=True)
             end = torch.cuda.Event(enable_timing=True)
 
             # Ajuste de iteraciones para no eternizar tamaños 32k
-            iters = 100 if (M*N*K) < (32768**3) else 10
+            iters = 2
             
             start.record()
             for _ in range(iters):

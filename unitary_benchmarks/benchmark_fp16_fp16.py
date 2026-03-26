@@ -5,6 +5,8 @@ import time
 from tqdm import tqdm
 import os
 from pathlib import Path
+import torch.cuda.nvtx as nvtx
+
 
 # Obtener la ruta absoluta del directorio donde está este script
 script_dir = Path(__file__).parent.resolve()
@@ -13,6 +15,8 @@ script_dir = Path(__file__).parent.resolve()
 os.chdir(script_dir)
 
 # --- Configuración para RTX 4090 ---
+# --- Configuración RTX 4090 ---
+dtype = torch.float16
 torch.backends.cuda.matmul.allow_fp16_accumulation = True
 torch.backends.cudnn.benchmark = True
 device = torch.device("cuda")
@@ -73,12 +77,18 @@ def run_specific_benchmarks():
                 matmul_fn(a, b)
             torch.cuda.synchronize()
 
+            # --- PERFILADO PARA NCU ---
+            # Ahora el matmul está DENTRO del rango que NCU busca
+            res = matmul_fn(a, b)
+            torch.cuda.synchronize()
+            nvtx.range_pop()
+
             # --- MEDICIÓN ---
             start = torch.cuda.Event(enable_timing=True)
             end = torch.cuda.Event(enable_timing=True)
 
             # Ajustamos iteraciones: menos iteraciones para matrices gigantes
-            iters=100
+            iters=2
             #iters = 100 if (M*N*K) < (4096**3) else 20
             
             start.record()
