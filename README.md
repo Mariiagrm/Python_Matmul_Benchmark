@@ -217,26 +217,26 @@ Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 
 ## Results Eager
 
-![Eager Memory](images/eager_memory.png)
-![Eager Warp v2](images/EAGER_warp(v2).png)
-![GPU Speed of Light Eager](images/GPU_speedofLight_eager.png)
-![PM Sampling Eager](images/PM_sampling_eager.png)
+![Eager Memory](/fp16_fp16_to_fp16/images/eager_memory.png)
+![Eager Warp v2](/fp16_fp16_to_fp16/images/EAGER_warp(v2).png)
+![GPU Speed of Light Eager](/fp16_fp16_to_fp16/images/GPU_speedofLight_eager.png)
+![PM Sampling Eager](/fp16_fp16_to_fp16/images/PM_sampling_eager.png)
 
 ---
 
 ## Results JIT
 
-![JIT Memory](images/jit_memory.png)
-![JIT Warp v2](images/JIT_warp(v2).png)
-![GPU Speed of Light JIT](images/GPU_speedOfLight_jit.png)
-![PM Sampling JIT](images/PM_sampling_jit.png)
+![JIT Memory](/fp16_fp16_to_fp16/images/jit_memory.png)
+![JIT Warp v2](/fp16_fp16_to_fp16/images/JIT_warp(v2).png)
+![GPU Speed of Light JIT](/fp16_fp16_to_fp16/images/GPU_speedOfLight_jit.png)
+![PM Sampling JIT](/fp16_fp16_to_fp16/images/PM_sampling_jit.png)
 
 ---
 
 ## Results AOT
 
-![AOT Memory](images/aot_memory.png)
-![AOT Warp v2](images/AOT_warp(v2).png)
-![GPU Speed of Light AOT](images/GPU_speedOfLight_aot.png)
-![PM Sampling AOT](images/PM_sampling_aot.png)
+![AOT Memory](/fp16_fp16_to_fp16/images/aot_memory.png)
+![AOT Warp v2](/fp16_fp16_to_fp16/images/AOT_warp(v2).png)
+![GPU Speed of Light AOT](/fp16_fp16_to_fp16/images/GPU_speedOfLight_aot.png)
+![PM Sampling AOT](/fp16_fp16_to_fp16/images/PM_sampling_aot.png)
 
