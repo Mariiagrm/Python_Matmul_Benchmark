@@ -1,1 +1,0 @@
-{"preToPost": {"matmul": ["mm"]}, "postToPre": {"mm": ["matmul"]}, "cppCodeToPost": {"triton_tem_fused_mm_0": ["mm"]}, "postToCppCode": {"mm": ["triton_tem_fused_mm_0"]}}

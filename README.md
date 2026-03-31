@@ -53,8 +53,8 @@ Designed to maintain sustained arithmetic intensity. The internal dimension was 
     ├── results/                         # CSV files with raw data
     │   ├── full_benchmarks.csv
     │   ├── rtx4090_benchmark_cuda.csv
-    │   ├── rtx4090_benchmark_jit_specific.csv
-    │   ├── rtx4090_pytorch_eager_specific.csv
+    │   ├── rtx4090_benchmark_jit.csv
+    │   ├── rtx4090_pytorch_eager.csv
     │   └── rtx4090_torch_aoti_benchmark.csv
     └── utilities/
         ├── createGraph.py               # Script for data visualization
@@ -81,40 +81,82 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ## **First Version**: FP16/FP32
 
+![results_scuare](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/fp16_fp16_to_fp32/plots/compare_tflops_square.png)
+
+![results_fixed_k](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/fp16_fp16_to_fp32/plots/compare_tflops_fixed_k.png)
+
+
+| Type    | M     | N     | K     | Time_ms           | TFLOPS             | Mode                         |
+|---------|-------|-------|-------|-------------------|--------------------|------------------------------|
+| Square  | 16384 | 16384 | 16384 | 50.952294921875   | 172.6338928539926  | rtx4090_torch_aoti_benchmark |
+| Fixed_K | 32768 | 32768 | 8192  | 102.01292724609377| 172.45055621212586 | rtx4090_torch_aoti_benchmark |
+| Square  | 32768 | 32768 | 32768 | 408.083154296875  | 172.43726783799482 | rtx4090_torch_aoti_benchmark |
+| Fixed_K | 16384 | 16384 | 8192  | 25.530450439453126| 172.26670252192417 | rtx4090_torch_aoti_benchmark |
+| Square  | 8192  | 8192  | 8192  | 6.6               | 166.5927           | benchmark_mma-matmul         |
+| Fixed_K | 8192  | 8192  | 8192  | 6.6               | 166.5927           | benchmark_mma-matmul         |
+| Fixed_K | 32768 | 32768 | 8192  | 107.585986328125  | 163.51744911053595 | rtx4090_pytorch_eager        |
+| Fixed_K | 16384 | 16384 | 8192  | 26.90126953125    | 163.48843707896336 | rtx4090_pytorch_eager        |
+| Square  | 32768 | 32768 | 32768 | 430.82796875      | 163.33374172951486 | rtx4090_pytorch_eager        |
+| Square  | 16384 | 16384 | 16384 | 53.908994140625   | 163.16559346781426 | rtx4090_pytorch_eager        |
+| Square  | 16384 | 16384 | 16384 | 53.91             | 163.1625           | benchmark_mma-matmul         |
+| Square  | 8192  | 8192  | 8192  | 6.7856591796875   | 162.03460837929026 | rtx4090_pytorch_eager        |
+| Fixed_K | 8192  | 8192  | 8192  | 6.78956298828125  | 161.94144301684088 | rtx4090_pytorch_eager        |
+| Fixed_K | 4096  | 4096  | 8192  | 1.7139181518554687| 160.37983298468495 | rtx4090_pytorch_eager        |
+| Fixed_K | 16384 | 16384 | 8192  | 27.43             | 160.3371           | benchmark_mma-matmul         |
+| Square  | 32768 | 32768 | 32768 | 438.97            | 160.3042           | benchmark_mma-matmul         |
+| Square  | 4096  | 4096  | 4096  | 0.8586966705322265| 160.05530030390628 | rtx4090_pytorch_eager        |
+| Fixed_K | 2046  | 2046  | 8192  | 0.4285235214233398| 160.05031489565383 | rtx4090_pytorch_eager        |
+| Fixed_K | 4096  | 4096  | 8192  | 1.718074951171875 | 159.99180172931898 | rtx4090_torch_aoti_benchmark |
+| Square  | 4096  | 4096  | 4096  | 0.8640716552734375| 159.05967130527748 | rtx4090_torch_aoti_benchmark |
+| Square  | 8192  | 8192  | 8192  | 7.004569244384766 | 156.97062723127863 | rtx4090_torch_aoti_benchmark |
+| Fixed_K | 2046  | 2046  | 8192  | 0.4376678466796875| 156.7063357848058  | rtx4090_torch_aoti_benchmark |
+| Fixed_K | 8192  | 8192  | 8192  | 7.073792266845703 | 155.4345372749102  | rtx4090_torch_aoti_benchmark |
+| Fixed_K | 4096  | 4096  | 8192  | 1.77              | 155.2983           | benchmark_mma-matmul         |
+| Fixed_K | 32768 | 32768 | 8192  | 114.66            | 153.4291           | benchmark_mma-matmul         |
+| Square  | 4096  | 4096  | 4096  | 0.89738           | 153.1558           | benchmark_mma-matmul         |
+| Square  | 2046  | 2046  | 2046  | 0.1132630443572998| 151.23720865177324 | rtx4090_pytorch_eager        |
+| Fixed_K | 2046  | 2046  | 8192  | 0.46365           | 147.9248           | benchmark_mma-matmul         |
+| Fixed_K | 1024  | 1024  | 8192  | 0.1180160045623779| 145.57236747427334 | rtx4090_pytorch_eager        |
+| Square  | 2046  | 2046  | 2046  | 0.1209424018859863| 141.6342523786508  | rtx4090_torch_aoti_benchmark |
+| Fixed_K | 1024  | 1024  | 8192  | 0.128089599609375 | 134.1238417201094  | rtx4090_torch_aoti_benchmark |
+| Square  | 2046  | 2046  | 2046  | 0.14605           | 117.2858           | benchmark_mma-matmul         |
+
+
+
 ## **Second Version**: FP16/FP16
 
-![results_scuare](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/plots/compare_tflops_square.png)
+![results_scuare](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/fp16_fp16_to_fp16/plots/compare_tflops_square.png)
 
-![results_fixed_k](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/plots/compare_tflops_fixed_k.png)
+![results_fixed_k](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/fp16_fp16_to_fp16/plots/compare_tflops_fixed_k.png)
 
 | Type     | M     | N     | K     | Time_ms           | TFLOPS              | Mode                               |
 |----------|-------|-------|-------|-------------------|---------------------|------------------------------------|
 | Fixed_K  | 2046  | 2046  | 8192  | 0.218757          | 313.523             | rtx4090_benchmark_cuda             |
-| Fixed_K  | 2046  | 2046  | 8192  | 0.2234582328796386| 306.92681876233274  | rtx4090_pytorch_eager_specific     |
+| Fixed_K  | 2046  | 2046  | 8192  | 0.2234582328796386| 306.92681876233274  | rtx4090_pytorch_eager     |
 | Square   | 32768 | 32768 | 32768 | 235.171           | 299.224             | rtx4090_benchmark_cuda             |
 | Square   | 32768 | 32768 | 32768 | 235.449658203125  | 298.8695957968055   | rtx4090_torch_aoti_benchmark (fp16)|
-| Square   | 32768 | 32768 | 32768 | 235.61572265625   | 298.6589493449383   | rtx4090_pytorch_eager_specific     |
+| Square   | 32768 | 32768 | 32768 | 235.61572265625   | 298.6589493449383   | rtx4090_pytorch_eager     |
 | Square   | 16384 | 16384 | 16384 | 29.808            | 295.091             | rtx4090_benchmark_cuda             |
-| Square   | 16384 | 16384 | 16384 | 29.87230224609375 | 294.45648178517007  | rtx4090_pytorch_eager_specific     |
+| Square   | 16384 | 16384 | 16384 | 29.87230224609375 | 294.45648178517007  | rtx4090_pytorch_eager     |
 | Square   | 16384 | 16384 | 16384 | 29.9085693359375  | 294.09942426229003  | rtx4090_torch_aoti_benchmark (fp16)|
 | Fixed_K  | 2046  | 2046  | 8192  | 0.240199031829834 | 285.5353913024446   | rtx4090_torch_aoti_benchmark       |
-| Square   | 16384 | 16384 | 16384 | 31.73125          | 277.2060042452787   | rtx4090_benchmark_jit_specific     |
-| Square   | 4096  | 4096  | 4096  | 0.5069100952148438| 271.1308272796367   | rtx4090_pytorch_eager_specific     |
-| Square   | 2046  | 2046  | 2046  | 0.0637328004837036| 268.771912453149    | rtx4090_pytorch_eager_specific     |
+| Square   | 16384 | 16384 | 16384 | 31.73125          | 277.2060042452787   | rtx4090_benchmark_jit     |
+| Square   | 4096  | 4096  | 4096  | 0.5069100952148438| 271.1308272796367   | rtx4090_pytorch_eager     |
+| Square   | 2046  | 2046  | 2046  | 0.0637328004837036| 268.771912453149    | rtx4090_pytorch_eager     |
 | Square   | 4096  | 4096  | 4096  | 0.5204377746582032| 264.0833547531458   | rtx4090_torch_aoti_benchmark       |
 | Fixed_K  | 32768 | 32768 | 8192  | 67.36967163085937 | 261.12916418547184  | rtx4090_torch_aoti_benchmark       |
-| Fixed_K  | 32768 | 32768 | 8192  | 67.502548828125   | 260.615137499611    | rtx4090_pytorch_eager_specific     |
+| Fixed_K  | 32768 | 32768 | 8192  | 67.502548828125   | 260.615137499611    | rtx4090_pytorch_eager     |
 | Fixed_K  | 32768 | 32768 | 8192  | 67.5091           | 260.59              | rtx4090_benchmark_cuda             |
 | Fixed_K  | 16384 | 16384 | 8192  | 17.01529541015625 | 258.4760596327263   | rtx4090_torch_aoti_benchmark       |
-| Fixed_K  | 16384 | 16384 | 8192  | 17.0625146484375  | 257.76074639190136  | rtx4090_pytorch_eager_specific     |
+| Fixed_K  | 16384 | 16384 | 8192  | 17.0625146484375  | 257.76074639190136  | rtx4090_pytorch_eager     |
 | Fixed_K  | 8192  | 8192  | 8192  | 4.274585723876953 | 257.22062880488164  | rtx4090_torch_aoti_benchmark       |
 | Fixed_K  | 16384 | 16384 | 8192  | 17.1194           | 256.904             | rtx4090_benchmark_cuda             |
-| Fixed_K  | 4096  | 4096  | 8192  | 1.0751696014404295| 255.66004337896055  | rtx4090_pytorch_eager_specific     |
+| Fixed_K  | 4096  | 4096  | 8192  | 1.0751696014404295| 255.66004337896055  | rtx4090_pytorch_eager     |
 | Square   | 8192  | 8192  | 8192  | 4.305270385742188 | 255.38735764825947  | rtx4090_torch_aoti_benchmark       |
-Fixed_K|32768|32768|8192|69.21912231445313|254.152110806853|rtx4090_benchmark_jit_specific|
-Square|8192|8192|8192|4.326647644042969|254.1255304877516|rtx4090_pytorch_eager_specific|
+Fixed_K|32768|32768|8192|69.21912231445313|254.152110806853|rtx4090_benchmark_jit|
+Square|8192|8192|8192|4.326647644042969|254.1255304877516|rtx4090_pytorch_eager|
 Fixed_K|4096|4096|8192|1.082449951171875|253.9405232051731|rtx4090_torch_aoti_benchmark|
-Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager_specific|
+Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 
 ## Results Eager
 
