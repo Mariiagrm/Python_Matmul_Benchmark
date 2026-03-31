@@ -33,64 +33,64 @@ Designed to maintain sustained arithmetic intensity. The internal dimension was 
 📂 Project Structure
 
 
-  .
-  ├── benchmarks_executor.sh        # 🧠 Main entry point: orchestrates all benchmark executions
-  │
-  ├── fp16_fp16_to_fp16             # 🔬 Experiments: FP16 → FP16 precision pipeline
-  │   ├── benchmarks                # ⚙️ Core benchmark implementations
-  │   │   ├── benchmark_aot_compile.py   # AOT (Ahead-Of-Time) compilation benchmark
-  │   │   ├── benchmark_fp16             # Compiled binary for CUDA benchmark
-  │   │   ├── benchmark_fp16.cu          # CUDA kernel implementation (FP16)
-  │   │   ├── benchmark_fp16_fp16.py     # Python benchmark (FP16 → FP16)
-  │   │   ├── benchmark_torch_compile.py # Torch compile benchmark
-  │   │   ├── cuda_executor.sh           # Script to launch CUDA benchmarks
-  │   │   ├── log                       # Execution logs
-  │   │   └── torch_compile_debug       # Debug artifacts for torch.compile
-  │   │
-  │   ├── images                    # 🖼️ Generated images (plots, visual outputs)
-  │   ├── nvidia_nsight             # 📊 Profiling outputs (Nsight Systems/Compute)
-  │   ├── plots                     # 📈 Performance plots
-  │   │   ├── compare_tflops_fixed_k.png
-  │   │   └── compare_tflops_square.png
-  │   │
-  │   ├── results                   # 📄 Raw benchmark results (CSV format)
-  │   │   ├── benchmarkCompleto.csv
-  │   │   ├── rtx4090_benchmark_cuda.csv
-  │   │   ├── rtx4090_benchmark_jit.csv
-  │   │   ├── rtx4090_pytorch_eager.csv
-  │   │   └── rtx4090_torch_aoti_benchmark.csv
-  │   │
-  │   ├── unique_results            # 🧹 Filtered/processed benchmark results
-  │   │   ├── rtx4090_benchmark_jit.csv
-  │   │   ├── rtx4090_benchmark_jit_optimized.csv
-  │   │   ├── rtx4090_pytorch_eager_specific.csv
-  │   │   └── rtx4090_torch_aoti_benchmark.csv
-  │   │
-  │   ├── unitary_benchmarks        # 🧪 Isolated benchmarks for individual testing
-  │   │   ├── benchmark_aot_compile.py
-  │   │   ├── benchmark_fp16
-  │   │   ├── benchmark_fp16.cu
-  │   │   ├── benchmark_fp16_fp16.py
-  │   │   ├── benchmark_torch_compile.py
-  │   │   └── cuda_executor.sh
-  │   │
-  │   └── utils                     # 🛠️ Utility scripts
-  │       ├── plotCreate.py         # Plot generation
-  │       └── sortBenchmark.py      # Result sorting/processing
-  │
-  ├── fp16_fp16_to_fp32             # 🔬 Experiments: FP16 → FP32 precision pipeline
-  │   ├── analisis.md               # 📝 Analysis and notes for this configuration
-  │   │
-  │   ├── benchmarks                # ⚙️ Benchmark implementations
-  │   │   ├── benchmark_aot_compile.py
-  │   │   ├── benchmark_fp16
-  │   │   ├── benchmark_fp16.cu
-  │   │   ├── benchmark_fp16_fp32.py   # Python benchmark (FP16 → FP32)
-  │   │   ├── benchmark_torch_compile.py
-  │   │   ├── cuda_executor.sh
-  │   │   ├── log
-  │   │   └── mma-matmul            # 🧮 Advanced CUDA MMA (matrix multiply) experiments
-   [Rest is simetric structure]
+      .
+      ├── benchmarks_executor.sh        # 🧠 Main entry point: orchestrates all benchmark executions
+      │
+      ├── fp16_fp16_to_fp16             # 🔬 Experiments: FP16 → FP16 precision pipeline
+      │   ├── benchmarks                # ⚙️ Core benchmark implementations
+      │   │   ├── benchmark_aot_compile.py   # AOT (Ahead-Of-Time) compilation benchmark
+      │   │   ├── benchmark_fp16             # Compiled binary for CUDA benchmark
+      │   │   ├── benchmark_fp16.cu          # CUDA kernel implementation (FP16)
+      │   │   ├── benchmark_fp16_fp16.py     # Python benchmark (FP16 → FP16)
+      │   │   ├── benchmark_torch_compile.py # Torch compile benchmark
+      │   │   ├── cuda_executor.sh           # Script to launch CUDA benchmarks
+      │   │   ├── log                       # Execution logs
+      │   │   └── torch_compile_debug       # Debug artifacts for torch.compile
+      │   │
+      │   ├── images                    # 🖼️ Generated images (plots, visual outputs)
+      │   ├── nvidia_nsight             # 📊 Profiling outputs (Nsight Systems/Compute)
+      │   ├── plots                     # 📈 Performance plots
+      │   │   ├── compare_tflops_fixed_k.png
+      │   │   └── compare_tflops_square.png
+      │   │
+      │   ├── results                   # 📄 Raw benchmark results (CSV format)
+      │   │   ├── benchmarkCompleto.csv
+      │   │   ├── rtx4090_benchmark_cuda.csv
+      │   │   ├── rtx4090_benchmark_jit.csv
+      │   │   ├── rtx4090_pytorch_eager.csv
+      │   │   └── rtx4090_torch_aoti_benchmark.csv
+      │   │
+      │   ├── unique_results            # 🧹 Filtered/processed benchmark results
+      │   │   ├── rtx4090_benchmark_jit.csv
+      │   │   ├── rtx4090_benchmark_jit_optimized.csv
+      │   │   ├── rtx4090_pytorch_eager_specific.csv
+      │   │   └── rtx4090_torch_aoti_benchmark.csv
+      │   │
+      │   ├── unitary_benchmarks        # 🧪 Isolated benchmarks for individual testing
+      │   │   ├── benchmark_aot_compile.py
+      │   │   ├── benchmark_fp16
+      │   │   ├── benchmark_fp16.cu
+      │   │   ├── benchmark_fp16_fp16.py
+      │   │   ├── benchmark_torch_compile.py
+      │   │   └── cuda_executor.sh
+      │   │
+      │   └── utils                     # 🛠️ Utility scripts
+      │       ├── plotCreate.py         # Plot generation
+      │       └── sortBenchmark.py      # Result sorting/processing
+      │
+      ├── fp16_fp16_to_fp32             # 🔬 Experiments: FP16 → FP32 precision pipeline
+      │   ├── analisis.md               # 📝 Analysis and notes for this configuration
+      │   │
+      │   ├── benchmarks                # ⚙️ Benchmark implementations
+      │   │   ├── benchmark_aot_compile.py
+      │   │   ├── benchmark_fp16
+      │   │   ├── benchmark_fp16.cu
+      │   │   ├── benchmark_fp16_fp32.py   # Python benchmark (FP16 → FP32)
+      │   │   ├── benchmark_torch_compile.py
+      │   │   ├── cuda_executor.sh
+      │   │   ├── log
+      │   │   └── mma-matmul            # 🧮 Advanced CUDA MMA (matrix multiply) experiments
+       [Rest is simetric structure]
     
     
 ## 🚀 How to Run
