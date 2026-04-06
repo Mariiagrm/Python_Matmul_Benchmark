@@ -125,16 +125,24 @@ Example:
     ./script.sh --help
  
  ## 🧪 Strategies Evaluated
-**1. CUDA Native (benchmark_fp16.cu):** Maximum performance baseline using NVIDIA APIs (cuBLAS) directly from C++.
+**1. CUDA Native:** Maximum performance baseline using NVIDIA APIs (cuBLAS) directly from C++.
 
-**2. PyTorch Eager (benchmark_fp16_fp16.py):** Standard operation-by-operation execution.
+**2. PyTorch Eager:** Standard operation-by-operation execution.
 
-**3. PyTorch JIT (benchmark_torch_compile.py):** Uses torch.compile with:
+**3. PyTorch JIT:** Uses torch.compile with:
 
 - mode="max-autotune": Performs an exhaustive search by testing multiple tile configurations directly on the GPU to choose the absolute winner.
 - dynamic=False: Disables dynamic shape inference to ensure maximum performance (assumes static sizes).
 
-**4. PyTorch AOT (benchmark_aot_compile.py):** Pre-compilation. Uses fullgraph=True to ensure that 100% of the model is compiled on the GPU, silently preventing any return to the Python interpreter.
+**4. PyTorch AOT:** Pre-compilation. Uses fullgraph=True to ensure that 100% of the model is compiled on the GPU, silently preventing any return to the Python interpreter.
+
+**5. Benchmark mma-matmul (FP16/FP32 Precision):** 
+This section evaluates the performance of High-Speed Matrix Multiplication (GEMM) using Tensor Cores on the NVIDIA Ada Lovelace architecture, based on the mma-matmul implementation.
+
+The cublasGemmEx API, utilizing FP16 inputs and FP32 accumulation, serves as the primary performance reference. For a matrix of dimensions $M=N=K=4096$, cuBLAS achieves an execution time of $895\ \mu s$. 
+
+To conduct a comprehensive comparison, a custom testbed (ejecutador.sh) was utilized to analyze a wide variety of matrix sizes.
+The benchmark covers the evolutionary progression of all kernels developed in this project, including versions 0.x, 1.x, 2.x, and 3.x (specifically kernels 0, 1, 10, 11, 20, 21, 30, 31, 32, 33, and 34). This allows for a detailed observation of performance gains—from the initial "naive" implementation to advanced asynchronous pipelining.
 
 ## **First Version**: FP16/FP32
 
