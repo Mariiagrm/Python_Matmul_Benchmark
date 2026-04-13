@@ -33,51 +33,116 @@ Designed to maintain sustained arithmetic intensity. The internal dimension was 
 📂 Project Structure
 
 
-    .
-    ├── benchmarks/
-    │   ├── aoti_compiled_models/
-    │   ├── benchmark_aot_compile.py     # Static Compilation (Ahead-Of-Time)
-    │   ├── benchmark_fp16.cu            # Native CUDA/cuBLAS Implementation
-    │   ├── benchmark_fp16               # Compiled CUDA Executable
-    │   ├── benchmark_fp16_fp16.py       # Classic PyTorch Mode (Eager)
-    │   ├── benchmark_torch_compile.py   # Dynamic Compilation (JIT/Dynamo)
-    │   ├── CUBLAScomparation/           # [TODO]
-    │   ├── cuda_executor.sh             # Exclusive launcher script for CUDA
-    │   └── login/
-    │       ├── AOT_records.py
-    │       └── JIT_records.py
-    ├── benchmark_executor.sh            # Master script to launch all tests
-    ├── plots/                           # Automatically generated graphs
-    │   ├── tflops_fixed_k_comparative.png
-    │   └── tflops_square_comparative.png
-    ├── results/                         # CSV files with raw data
-    │   ├── full_benchmarks.csv
-    │   ├── rtx4090_benchmark_cuda.csv
-    │   ├── rtx4090_benchmark_jit.csv
-    │   ├── rtx4090_pytorch_eager.csv
-    │   └── rtx4090_torch_aoti_benchmark.csv
-    └── utilities/
-        ├── createGraph.py               # Script for data visualization
-        └── sortBenchmark.py             # Script for cleaning and sorting CSVs
+      .
+      ├── benchmarks_executor.sh        # 🧠 Main entry point: orchestrates all benchmark executions
+      │
+      ├── fp16_fp16_to_fp16             # 🔬 Experiments: FP16 → FP16 precision pipeline
+      │   ├── benchmarks                # ⚙️ Core benchmark implementations
+      │   │   ├── benchmark_aot_compile.py   # AOT (Ahead-Of-Time) compilation benchmark
+      │   │   ├── benchmark_fp16             # Compiled binary for CUDA benchmark
+      │   │   ├── benchmark_fp16.cu          # CUDA kernel implementation (FP16)
+      │   │   ├── benchmark_fp16_fp16.py     # Python benchmark (FP16 → FP16)
+      │   │   ├── benchmark_torch_compile.py # Torch compile benchmark
+      │   │   ├── cuda_executor.sh           # Script to launch CUDA benchmarks
+      │   │   ├── log                       # Execution logs
+      │   │   └── torch_compile_debug       # Debug artifacts for torch.compile
+      │   │
+      │   ├── images                    # 🖼️ Generated images (plots, visual outputs)
+      │   ├── nvidia_nsight             # 📊 Profiling outputs (Nsight Systems/Compute)
+      │   ├── plots                     # 📈 Performance plots
+      │   │   ├── compare_tflops_fixed_k.png
+      │   │   └── compare_tflops_square.png
+      │   │
+      │   ├── results                   # 📄 Raw benchmark results (CSV format)
+      │   │   ├── benchmarkCompleto.csv
+      │   │   ├── rtx4090_benchmark_cuda.csv
+      │   │   ├── rtx4090_benchmark_jit.csv
+      │   │   ├── rtx4090_pytorch_eager.csv
+      │   │   └── rtx4090_torch_aoti_benchmark.csv
+      │   │
+      │   ├── unique_results            # 🧹 Filtered/processed benchmark results
+      │   │   ├── rtx4090_benchmark_jit.csv
+      │   │   ├── rtx4090_benchmark_jit_optimized.csv
+      │   │   ├── rtx4090_pytorch_eager_specific.csv
+      │   │   └── rtx4090_torch_aoti_benchmark.csv
+      │   │
+      │   ├── unitary_benchmarks        # 🧪 Isolated benchmarks for individual testing
+      │   │   ├── benchmark_aot_compile.py
+      │   │   ├── benchmark_fp16
+      │   │   ├── benchmark_fp16.cu
+      │   │   ├── benchmark_fp16_fp16.py
+      │   │   ├── benchmark_torch_compile.py
+      │   │   └── cuda_executor.sh
+      │   │
+      │   └── utils                     # 🛠️ Utility scripts
+      │       ├── plotCreate.py         # Plot generation
+      │       └── sortBenchmark.py      # Result sorting/processing
+      │
+      ├── fp16_fp16_to_fp32             # 🔬 Experiments: FP16 → FP32 precision pipeline
+      │   ├── analisis.md               # 📝 Analysis and notes for this configuration
+      │   │
+      │   ├── benchmarks                # ⚙️ Benchmark implementations
+      │   │   ├── benchmark_aot_compile.py
+      │   │   ├── benchmark_fp16
+      │   │   ├── benchmark_fp16.cu
+      │   │   ├── benchmark_fp16_fp32.py   # Python benchmark (FP16 → FP32)
+      │   │   ├── benchmark_torch_compile.py
+      │   │   ├── cuda_executor.sh
+      │   │   ├── log
+      │   │   └── mma-matmul            # 🧮 Advanced CUDA MMA (matrix multiply) experiments
+       [Rest is simetric structure]
     
     
 ## 🚀 How to Run
 To launch the complete benchmark suite, simply run the master script from the project root:
 
-    bash run_benchmarks.sh
+    ./benchmarks_executor.sh [OPTIONS]
+### ⚙️ Available Options
+**--a [fp16 | fp32]**
+- Description: Specifies the architecture mode (precision).
+Values:
+- fp16 → Half precision (default)
+- fp32 → Single precision
 
+Example:
+    ./script.sh --a fp32
+
+**--profile**
+Description: Enables profiling mode.
+Behavior: Activates profiling tools such as Nsight Systems and Nsight Compute.
+Example:
+    ./script.sh --profile
+    
+**--sb**
+Description: Skips benchmark execution.
+Behavior: Prevents benchmarks from running (useful for faster runs or debugging).
+Example:
+    ./script.sh --sb
+
+**-h**
+Description: Displays help information.
+Example:
+    ./script.sh --help
  
  ## 🧪 Strategies Evaluated
-**1. CUDA Native (benchmark_fp16.cu):** Maximum performance baseline using NVIDIA APIs (cuBLAS) directly from C++.
+**1. CUDA Native:** Maximum performance baseline using NVIDIA APIs (cuBLAS) directly from C++.
 
-**2. PyTorch Eager (benchmark_fp16_fp16.py):** Standard operation-by-operation execution.
+**2. PyTorch Eager:** Standard operation-by-operation execution.
 
-**3. PyTorch JIT (benchmark_torch_compile.py):** Uses torch.compile with:
+**3. PyTorch JIT:** Uses torch.compile with:
 
 - mode="max-autotune": Performs an exhaustive search by testing multiple tile configurations directly on the GPU to choose the absolute winner.
 - dynamic=False: Disables dynamic shape inference to ensure maximum performance (assumes static sizes).
 
-**4. PyTorch AOT (benchmark_aot_compile.py):** Pre-compilation. Uses fullgraph=True to ensure that 100% of the model is compiled on the GPU, silently preventing any return to the Python interpreter.
+**4. PyTorch AOT:** Pre-compilation. Uses fullgraph=True to ensure that 100% of the model is compiled on the GPU, silently preventing any return to the Python interpreter.
+
+**5. Benchmark mma-matmul (FP16/FP32 Precision):** 
+This section evaluates the performance of High-Speed Matrix Multiplication (GEMM) using Tensor Cores on the NVIDIA Ada Lovelace architecture, based on the mma-matmul implementation.
+
+The cublasGemmEx API, utilizing FP16 inputs and FP32 accumulation, serves as the primary performance reference. For a matrix of dimensions $M=N=K=4096$, cuBLAS achieves an execution time of $895\ \mu s$. 
+
+To conduct a comprehensive comparison, a custom testbed (ejecutador.sh) was utilized to analyze a wide variety of matrix sizes.
+The benchmark covers the evolutionary progression of all kernels developed in this project, including versions 0.x, 1.x, 2.x, and 3.x (specifically kernels 0, 1, 10, 11, 20, 21, 30, 31, 32, 33, and 34). This allows for a detailed observation of performance gains—from the initial "naive" implementation to advanced asynchronous pipelining.
 
 ## **First Version**: FP16/FP32
 
@@ -160,28 +225,28 @@ Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 
 ## Results Eager
 
-![Eager Memory](images/eager_memory.png)
-![Eager Warp v2](images/EAGER_warp(v2).png)
-![GPU Speed of Light Eager](images/GPU_speedofLight_eager.png)
-![PM Sampling Eager](images/PM_sampling_eager.png)
+![Eager Memory](/fp16_fp16_to_fp16/images/eager_memory.png)
+![Eager Warp v2](/fp16_fp16_to_fp16/images/EAGER_warp(v2).png)
+![GPU Speed of Light Eager](/fp16_fp16_to_fp16/images/GPU_speedofLight_eager.png)
+![PM Sampling Eager](/fp16_fp16_to_fp16/images/PM_sampling_eager.png)
 
 ---
 
 ## Results JIT
 
-![JIT Memory](images/jit_memory.png)
-![JIT Warp v2](images/JIT_warp(v2).png)
-![GPU Speed of Light JIT](images/GPU_speedOfLight_jit.png)
-![PM Sampling JIT](images/PM_sampling_jit.png)
+![JIT Memory](/fp16_fp16_to_fp16/images/jit_memory.png)
+![JIT Warp v2](/fp16_fp16_to_fp16/images/JIT_warp(v2).png)
+![GPU Speed of Light JIT](/fp16_fp16_to_fp16/images/GPU_speedOfLight_jit.png)
+![PM Sampling JIT](/fp16_fp16_to_fp16/images/PM_sampling_jit.png)
 
 ---
 
 ## Results AOT
 
-![AOT Memory](images/aot_memory.png)
-![AOT Warp v2](images/AOT_warp(v2).png)
-![GPU Speed of Light AOT](images/GPU_speedOfLight_aot.png)
-![PM Sampling AOT](images/PM_sampling_aot.png)
+![AOT Memory](/fp16_fp16_to_fp16/images/aot_memory.png)
+![AOT Warp v2](/fp16_fp16_to_fp16/images/AOT_warp(v2).png)
+![GPU Speed of Light AOT](/fp16_fp16_to_fp16/images/GPU_speedOfLight_aot.png)
+![PM Sampling AOT](/fp16_fp16_to_fp16/images/PM_sampling_aot.png)
 
 
 Citation
