@@ -183,3 +183,26 @@ Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 ![GPU Speed of Light AOT](images/GPU_speedOfLight_aot.png)
 ![PM Sampling AOT](images/PM_sampling_aot.png)
 
+
+Citation
+If you use this library in your research, please cite:
+
+    @software{Pytorch_Matmul_BenchMark,
+    author = {Maria Garcia Miñarro},
+    title = {Pytorch vs Cuda (CuTe) Matmul BenchMark},
+    url = {https://github.com/Mariiagrm/Python_Matmul_Benchmark},
+    year = {2026},
+    }
+    @article{,
+        title={}, 
+        author={},
+        year={},
+        eprint={},
+        archivePrefix={},
+        primaryClass={},
+        url={}, 
+    }
+
+#Acknowledgements
+This project uses CUTLASS for optimized CUDA kernels.
+

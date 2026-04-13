@@ -60,7 +60,7 @@ class MatMulModel(torch.nn.Module):
 
 def run_exhaustive_benchmark():
     # --- DEFINICIÓN DE CASOS ---
-    dims_base = [1024, 2046, 4096, 8192, 16384, 32768] 
+    dims_base = [1024, 2046, 4096, 8192, 16384, 32768]
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
     
     K_fixed = 8192

@@ -5,13 +5,14 @@ export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 # Configuración de archivos
-BINARY="./benchmark_fp16"
-OUTPUT_FILE="../results/rtx4090_benchmark_cuda.csv"
+# ./benchmark_fp32 16384 16384 16384
+BINARY="./benchmark_fp32"
+OUTPUT_FILE="../../results/rtx4090_benchmark_cuda.csv"
 
 # Verificar binario
 if [ ! -f "$BINARY" ]; then
     echo "❌ Error: No se encuentra $BINARY. Compila antes de ejecutar."
-     nvcc -O3 -arch=sm_89 -lcublas benchmark_fp16.cu -o benchmark_fp16
+     nvcc -O3 -arch=sm_89 -lcublas benchmark_fp32.cu -o benchmark_fp32
     #exit 1
 fi
 
@@ -40,7 +41,7 @@ run_and_save() {
     tflops=$(echo "$raw_output" | grep "Rendimiento estimado" | awk '{print $3}')
 
     # Guardar en CSV
-    echo "$type,$m,$n,$k,$time_ms,$tflops" >> "$OUTPUT_FILE"
+    echo "$type,$m,$n,$k,$time_ms,$tflops" > "$OUTPUT_FILE"
 }
 
 # --- TAREA 1: Matrices Cuadradas ---

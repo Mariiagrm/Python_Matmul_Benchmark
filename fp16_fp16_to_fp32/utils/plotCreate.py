@@ -87,7 +87,7 @@ else:
         # Generate the bars
         df_pivot.plot(kind='bar', figsize=(12, 6), width=0.8, colormap='viridis')
         
-        plt.title(f'Throughput (TFLOPS) MatMul (FP16/FP16) - RTX 4090 - Mode: {mode}', fontsize=16, pad=15)
+        plt.title(f'Throughput (TFLOPS) MatMul (FP16/FP16 --> FP16) - RTX 4090 - Mode: {mode}', fontsize=16, pad=15)
         plt.xlabel('Matrix Size (M x N x K)', fontsize=12)
         plt.ylabel('Throughput (TFLOPS)', fontsize=12)
         plt.xticks(rotation=45, ha='right')

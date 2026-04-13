@@ -106,11 +106,18 @@ run_benchmarks() {
         echo "✅ Completado: FP16/FP32"
         echo "--------------------------------------------------------"
 
-        echo "▶️  Ejecutando: FP16/FP32 CUDA Benchmark"
-        if [ -f "./mma-matmul/cuda_executor.sh" ]; then
-            bash ./mma-matmul/cuda_executor.sh
+        echo "▶️  Ejecutando: FP16/fp32 CUDA Benchmark"
+        bash ./cuda_executor.sh
+        echo "✅ Completado: cuda FP16/FP32"
+        echo "--------------------------------------------------------"
+
+        echo "▶️  Ejecutando: FP16/FP32 Matmul Benchmark (cuBLAS)"
+        if [ -f "./mma-matmul/ejecutador.sh" ]; then
+            cd "./mma-matmul" || exit 1
+            bash "./ejecutador.sh"
+            cd .. || exit 1
         else
-            echo "⚠️  Advertencia: No se encontró ./mma-matmul/cuda_executor.sh"
+            echo "⚠️  Advertencia: No se encontró ./mma-matmul/ejecutador.sh"
         fi
     fi
     echo "▶️  Ejecutando: AOT Compile Benchmark"
@@ -134,6 +141,7 @@ fi
 
 echo "--------------------------------------------------------"
 if [ -f "$ROOT_DIR/utils/sortBenchmarks.py" ] && [ -f "$ROOT_DIR/utils/plotCreate.py" ]; then
+
     python "$ROOT_DIR/utils/sortBenchmarks.py"
     python "$ROOT_DIR/utils/plotCreate.py"
     echo "✅ Datos y Gráficas completados."

@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 # Configuración de archivos
 BINARY="./benchmark_fp16"
-OUTPUT_FILE="../results/rtx4090_benchmark_cuda.csv"
+OUTPUT_FILE="../../results/rtx4090_benchmark_cuda.csv"
 
 # Verificar binario
 if [ ! -f "$BINARY" ]; then
