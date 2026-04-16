@@ -9,6 +9,19 @@ from torch._inductor.package import load_package
 import os
 from pathlib import Path
 
+print(f"Versión: {torch.__version__}")
+print(f"CUDA disponible: {torch.cuda.is_available()}")
+if torch.cuda.is_available():
+    print(f"Dispositivo: {torch.cuda.get_device_name(0)}")
+
+# Requiere PyTorch 2.7.0 o superior
+_major, _minor = (int(x) for x in torch.__version__.split(".")[:2])
+if (_major, _minor) < (2, 7):
+    raise RuntimeError(
+        f"Se requiere PyTorch >= 2.7.0, pero se encontró {torch.__version__}"
+    )
+
+
 # Obtener la ruta absoluta del directorio donde está este script
 script_dir = Path(__file__).parent.resolve()
 
