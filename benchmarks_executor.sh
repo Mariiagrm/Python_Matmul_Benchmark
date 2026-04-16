@@ -121,6 +121,7 @@ run_benchmarks() {
         fi
     fi
     echo "▶️  Ejecutando: AOT Compile Benchmark"
+    export TRITON_NUM_STAGES=3
     python ./benchmark_aot_compile.py
 
     echo "▶️  Ejecutando: JIT Torch Compile Benchmark"

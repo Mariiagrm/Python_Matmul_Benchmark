@@ -24,8 +24,11 @@ torch.backends.cuda.matmul.allow_tf32 = False
 torch.backends.cudnn.allow_tf32 = False
 
 # Forzamos acumulación estricta en FP16 (ACC_TYPE='tl.float16')
-if hasattr(torch.backends.cuda.matmul, "allow_fp16_accumulation"):
-    torch.backends.cuda.matmul.allow_fp16_accumulation = True
+if not hasattr(torch.backends.cuda.matmul, "allow_fp16_accumulation"):
+    raise RuntimeError(
+        f"torch.backends.cuda.matmul.allow_fp16_accumulation no está disponible en tu versión de PyTorch "
+       )
+torch.backends.cuda.matmul.allow_fp16_accumulation = True
 
 # Configuramos Inductor globalmente para el máximo autotuning durante la fase AOT
 torch._inductor.config.max_autotune = True

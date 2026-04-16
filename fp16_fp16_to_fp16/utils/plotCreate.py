@@ -10,7 +10,9 @@ script_dir = Path(__file__).parent.resolve()
 os.chdir(script_dir)
 
 # Initial configuration
+# Initial configuration
 csv_files = [
+        "../results/benchmark_mma-matmul.csv",
     "../results/rtx4090_benchmark_jit.csv",
     "../results/rtx4090_pytorch_eager.csv",
     "../results/rtx4090_torch_aoti_benchmark.csv",
@@ -21,11 +23,13 @@ tflops_col = "TFLOPS"
 
 # Dictionary for readable names
 method_names = {
+    "../results/benchmark_mma-matmul.csv": "MMA MatMul with kernel 3.2",
     "../results/rtx4090_benchmark_jit.csv": "Torch JIT",
     "../results/rtx4090_pytorch_eager.csv": "PyTorch Eager",
     "../results/rtx4090_torch_aoti_benchmark.csv": "Torch AOTI",
     "../results/rtx4090_benchmark_cuda.csv": "Native CUDA"
 }
+
 
 dataframes = []
 

@@ -28,6 +28,7 @@ if hasattr(torch.backends.cuda.matmul, "allow_fp16_accumulation"):
 
 # Configuramos Inductor globalmente para el máximo autotuning durante la fase AOT
 torch._inductor.config.max_autotune = True
+torch._inductor.config.max_autotune_gemm_backends = "TRITON"
 
 # --- 2. PREPARACIÓN PARA AOTI ---
 # AOTI / torch.export requiere que la función esté envuelta en un nn.Module

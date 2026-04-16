@@ -88,6 +88,7 @@ Constraints:
 * The contiguous dimension of A/B/C tensors must be at least 16 bytes aligned
 """
 
+# cd /Pytorch_Matmul_BenchMark/fp16_fp16_to_fp16/benchmarks/cute/cuteDSL
 
 class SGemm:
     def __init__(
