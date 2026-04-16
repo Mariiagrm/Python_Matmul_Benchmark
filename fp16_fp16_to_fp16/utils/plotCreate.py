@@ -10,7 +10,6 @@ script_dir = Path(__file__).parent.resolve()
 os.chdir(script_dir)
 
 # Initial configuration
-# Initial configuration
 csv_files = [
         "../results/benchmark_mma-matmul.csv",
     "../results/rtx4090_benchmark_jit.csv",
@@ -44,8 +43,8 @@ for file in csv_files:
         df['Config_M_N_K'] = df['M'].astype(str) + "x" + df['N'].astype(str) + "x" + df['K'].astype(str)
         
         
-        # Extract necessary columns, INCLUDING 'Type'
-        df_summary = df[['Type', 'Config_M_N_K', tflops_col]].copy()
+        # Extract necessary columns, INCLUDING 'Type' and numeric dims for sorting
+        df_summary = df[['Type', 'Config_M_N_K', 'M', 'N', 'K', tflops_col]].copy()
         df_summary['Method'] = method_names[file]
         
         dataframes.append(df_summary)
@@ -58,30 +57,33 @@ else:
     # Join all dataframes
     df_total = pd.concat(dataframes, ignore_index=True)
 
-    # Identify available modes in the 'Type' column (e.g., 'Square', 'Fixed_K')
-    # If your exact names are different, the script will adapt automatically.
+    # Identify available modes in the 'Type' column
     modes = df_total['Type'].unique()
-    
     print(f"Data types detected: {modes}\n")
 
     # Generate a plot for each Mode
     for mode in modes:
         print(f"=== Processing plot for mode: {mode} ===")
-        
+
         # Filter only the data for this mode
         df_mode = df_total[df_total['Type'] == mode]
-        
+
         # Create the pivot table for this specific mode
         df_pivot = df_mode.pivot_table(
-            index='Config_M_N_K', 
-            columns='Method', 
-            values=tflops_col, 
+            index='Config_M_N_K',
+            columns='Method',
+            values=tflops_col,
             aggfunc='mean'
         )
-        df_pivot = df_pivot.reindex(df_mode['Config_M_N_K'].unique())
 
-
-
+        # Sort configs numerically by (M, N, K) instead of lexicographically
+        sorted_configs = (
+            df_mode[['Config_M_N_K', 'M', 'N', 'K']]
+            .drop_duplicates('Config_M_N_K')
+            .sort_values(by=['M', 'N', 'K'])
+            ['Config_M_N_K']
+        )
+        df_pivot = df_pivot.reindex(sorted_configs)
 
         # Create the plot
         plt.figure(figsize=(12, 6))

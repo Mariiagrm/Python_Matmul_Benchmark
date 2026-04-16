@@ -69,9 +69,10 @@ export CUTE_DSL_ARCH=sm_89                 # or whichever var the script reads
 
 .. code-block:: bash
 
-    python benchmark_cute_dsl_ejemplo_cutlass.py                       \
-      --mnk 8192,8192,8192                                \
-      --a_major m --b_major n --c_major n
+   python benchmark_cute_dsl_ejemplo_cutlass.py \
+  --mnk 8192,8192,8192 \
+  --a_major m --b_major n --c_major n \
+  --skip_ref_check --iterations 100
 
 To collect performance with NCU profiler:
 
@@ -822,7 +823,14 @@ def run(
     )
 
     # Print execution results
-    print(f"Kernel execution time: {avg_time_us / 1e3:.4f} ms")
+    avg_time_ms = avg_time_us / 1e3
+    avg_time_sec = avg_time_us / 1e6
+    flops = 2.0 * M * N * K
+    tflops = flops / (avg_time_sec * 1e12)
+    print(f"Kernel execution time: {avg_time_ms:.4f} ms")
+    print(f"Throughput: {tflops:.2f} TFLOP/s")
+
+    return avg_time_us  # Return execution time in microseconds
 
     return avg_time_us  # Return execution time in microseconds
 

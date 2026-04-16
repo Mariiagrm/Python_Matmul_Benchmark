@@ -174,10 +174,10 @@ class HGemm:
                 else 4 if (mA.layout[0].max_alignment % 8 == 0)
                 else 2
             )
-            major_mode_size = self._bM // num_vectorized_A
+            m_mode_size = self._bM // num_vectorized_A
             tA = cute.make_layout(
-                (major_mode_size, self._num_threads // major_mode_size),
-                stride=(1, major_mode_size),
+                (self._num_threads // m_mode_size, m_mode_size),
+                stride=(m_mode_size, 1),
             )
             vA = cute.make_layout((num_vectorized_A, 1))
         else:
@@ -194,15 +194,21 @@ class HGemm:
             vA = cute.make_layout((1, num_vectorized_A))
 
         if cutlass.const_expr(self.b_major_mode == utils.LayoutEnum.COL_MAJOR):
+            # For FP16 col-major (n-major) B, vectorize along the
+            # contiguous N dimension using the same pattern as the
+            # row-major K-vectorisation path: put the vectorised
+            # "mode-size" in the *inner* (stride-1) thread dimension
+            # so that each thread's start address is naturally aligned
+            # to num_vectorized * element_width bits.
             num_vectorized_B = (
                 8 if (mB.layout[0].max_alignment % 16 == 0)
                 else 4 if (mB.layout[0].max_alignment % 8 == 0)
                 else 2
             )
-            major_mode_size = self._bN // num_vectorized_B
+            n_mode_size = self._bN // num_vectorized_B
             tB = cute.make_layout(
-                (major_mode_size, self._num_threads // major_mode_size),
-                stride=(1, major_mode_size),
+                (self._num_threads // n_mode_size, n_mode_size),
+                stride=(n_mode_size, 1),
             )
             vB = cute.make_layout((num_vectorized_B, 1))
         else:
