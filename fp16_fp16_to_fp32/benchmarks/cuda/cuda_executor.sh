@@ -37,11 +37,16 @@ run_and_save() {
 
     # Extraer solo los números usando awk
     #Tiempo promedio por iteración: 30.0801 ms
-    time_ms=$(echo "$raw_output" | grep "Tiempo promedio" | awk '{print $5}')
-    tflops=$(echo "$raw_output" | grep "Rendimiento estimado" | awk '{print $3}')
+   # Attempting to allocate: 1536 MB
+   #Average seconds: 0.0517477
+   #Performance (FP16 Inputs, FP32 Accumulate): 169.98 TFLOPS
+    time_ms=$(echo "$raw_output" | grep "Average seconds" | awk '{print $(NF-1)}')
+    tflops=$(echo "$raw_output" | grep "Performance (FP16 Inputs, FP32 Accumulate)" | awk '{print $(NF-1)}')
 
     # Guardar en CSV
-    echo "$type,$m,$n,$k,$time_ms,$tflops" > "$OUTPUT_FILE"
+    echo "$type,$m,$n,$k,$time_ms,$tflops" >> "$OUTPUT_FILE"
+    #MOSTRAR 
+    echo "$type,$m,$n,$k,$time_ms,$tflops" 
 }
 
 # --- TAREA 1: Matrices Cuadradas ---

@@ -22,7 +22,6 @@ kernels_names = {
     "../results/rtx4090_torch_aoti_benchmark.csv": "Torch AOTI",
     "../results/rtx4090_benchmark_cuda.csv": "Native CUDA"
 }
-
 pp_base_fp15_acfp32 = 165.2
 
 # Load all CSVs and tag each row with its kernel name
@@ -32,7 +31,7 @@ for file in csv_files:
         print(f"⚠️ Warning: File '{file}' not found.")
         continue
     df = pd.read_csv(file)
-    df = df.dropna(subset=["Time_ms", "TFLOPS"])
+    df = df.dropna(subset=[ "TFLOPS"])
     df["Kernel"] = kernels_names[file]
     dataframes.append(df)
 

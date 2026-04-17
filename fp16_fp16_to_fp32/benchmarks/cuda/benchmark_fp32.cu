@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
     checkCublas(cublasSetMathMode(handle, CUBLAS_TENSOR_OP_MATH), "MathMode");
 
     // 1. Calculate total needed bytes first
-    size_t total_bytes = (size_t)(M * K + K * N + M * N) * sizeof(__half);
+    size_t total_bytes = ((size_t)M * K + (size_t)K * N + (size_t)M * N) * sizeof(__half);
     std::cout << "Attempting to allocate: " << (total_bytes / (1024.0 * 1024.0)) << " MB" << std::endl;
 
     __half *d_all;
@@ -46,8 +46,8 @@ int main(int argc, char* argv[]) {
 
     // Sub-divide the block
     d_A = d_all;
-    d_B = d_all + (M * K);
-    d_C = d_all + (M * K) + (K * N);
+    d_B = d_all + ((size_t)M * K);
+    d_C = d_all + ((size_t)M * K) + ((size_t)K * N);
 
     // Important: alpha and beta are FLOAT for FP32 accumulation
     const float alpha = 1.0f;
@@ -91,9 +91,10 @@ int main(int argc, char* argv[]) {
     double avg_s = (ms / 1000.0) / iterations;
     double tflops = (2.0 * M * N * K) / (avg_s * 1e12);
 
+    std::cout << "Average seconds: " << avg_s << std::endl;
     std::cout << "Performance (FP16 Inputs, FP32 Accumulate): " << tflops << " TFLOPS" << std::endl;
 
-    cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);
+    cudaFree(d_all);
     cublasDestroy(handle);
     return 0;
 }
