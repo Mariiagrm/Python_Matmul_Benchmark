@@ -225,19 +225,19 @@ Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 
 ## Results Eager
 
-![Eager Memory](/fp16_fp16_to_fp16/images/eager_memory.png)
-![Eager Warp v2](/fp16_fp16_to_fp16/images/EAGER_warp(v2).png)
-![GPU Speed of Light Eager](/fp16_fp16_to_fp16/images/GPU_speedofLight_eager.png)
-![PM Sampling Eager](/fp16_fp16_to_fp16/images/PM_sampling_eager.png)
+![Eager Memory](/fp16_fp16_to_fp16/images/python27_v1/eager_memory.png)
+![Eager Warp v2](/fp16_fp16_to_fp16/images/python27_v1/EAGER_warp(v2).png)
+![GPU Speed of Light Eager](/fp16_fp16_to_fp16/images/python27_v1/GPU_speedofLight_eager.png)
+![PM Sampling Eager](/fp16_fp16_to_fp16/images/python27_v1/PM_sampling_eager.png)
 
 ---
 
 ## Results JIT
 
-![JIT Memory](/fp16_fp16_to_fp16/images/jit_memory.png)
-![JIT Warp v2](/fp16_fp16_to_fp16/images/JIT_warp(v2).png)
-![GPU Speed of Light JIT](/fp16_fp16_to_fp16/images/GPU_speedOfLight_jit.png)
-![PM Sampling JIT](/fp16_fp16_to_fp16/images/PM_sampling_jit.png)
+![JIT Memory](/fp16_fp16_to_fp16/images/python27_v1/jit_memory.png)
+![JIT Warp v2](/fp16_fp16_to_fp16/images/python27_v1/JIT_warp(v2).png)
+![GPU Speed of Light JIT](/fp16_fp16_to_fp16/images/python27_v1/GPU_speedOfLight_jit.png)
+![PM Sampling JIT](/fp16_fp16_to_fp16/images/python27_v1/PM_sampling_jit.png)
 
 ---
 
