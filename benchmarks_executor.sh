@@ -42,9 +42,9 @@ done
 
 # 3. Determinación del directorio raíz basado en los argumentos
 if [ "$ARCH_MODE" == "fp16" ]; then
-    ROOT_DIR="./fp16_fp16_to_fp16"
+    ROOT_DIR="$SCRIPT_DIR/fp16_fp16_to_fp16"
 elif [ "$ARCH_MODE" == "fp32" ]; then
-    ROOT_DIR="./fp16_fp16_to_fp32"
+    ROOT_DIR="$SCRIPT_DIR/fp16_fp16_to_fp32"
 else
     echo "❌ Error: Modo de arquitectura '$ARCH_MODE' no reconocido."
     echo "Usa 'fp16' o 'fp32'."
@@ -141,9 +141,9 @@ else
 fi
 
 echo "--------------------------------------------------------"
-if [ -f "$ROOT_DIR/utils/sortBenchmarks.py" ] && [ -f "$ROOT_DIR/utils/plotCreate.py" ]; then
+if [ -f "$ROOT_DIR/utils/sortBenchmark.py" ] && [ -f "$ROOT_DIR/utils/plotCreate.py" ]; then
 
-    python "$ROOT_DIR/utils/sortBenchmarks.py"
+    python "$ROOT_DIR/utils/sortBenchmark.py"
     python "$ROOT_DIR/utils/plotCreate.py"
     echo "✅ Datos y Gráficas completados."
 else
