@@ -128,21 +128,17 @@ def triton_matmul(a, b):
     )
     return c
 
-def run_benchmarks():
+def run_benchmarks(custom_tasks=None):
     results = []
-    
-    # --- DEFINICIÓN DE CASOS ---
-    dims_base = [1024, 2046, 4096, 8192, 16384, 32768] 
 
-    
-    # Benchmark 1: Matrices Cuadradas
-    bench_1_combs = [("Square", d, d, d) for d in dims_base]
-    
-    # Benchmark 2: K fijo (8192)
-    K_fixed = 8192
-    bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
-
-    all_tasks = bench_1_combs + bench_2_combs
+    if custom_tasks is not None:
+        all_tasks = custom_tasks
+    else:
+        dims_base = [1024, 2046, 4096, 8192, 16384, 32768]
+        bench_1_combs = [("Square", d, d, d) for d in dims_base]
+        K_fixed = 8192
+        bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
+        all_tasks = bench_1_combs + bench_2_combs
     
     print(f"🖥️  GPU: {torch.cuda.get_device_name(0)}")
     print(f"🚀 Modo: torch.compile(max-autotune, fullgraph=True, dynamic=False)")
@@ -207,16 +203,46 @@ def run_benchmarks():
 
     return pd.DataFrame(results)
 
+def _parse_mnk(s):
+    parts = [p for p in s.replace("x", ",").split(",") if p.strip()]
+    if len(parts) == 1:
+        d = int(parts[0]); return d, d, d
+    if len(parts) == 3:
+        return int(parts[0]), int(parts[1]), int(parts[2])
+    raise SystemExit("Usa --mnk N o --mnk M,N,K")
+
+
 if __name__ == "__main__":
-    df = run_benchmarks()
-    
-    filename = "../results/rtx4090_benchmark_jit.csv"
-    df.to_csv(filename, index=False)
-    
-    print(f"\n✅ Benchmark completado. Guardado en {filename}")
-    
-    print("\n--- Resultados: Matrices Cuadradas ---")
-    print(df[df["Type"] == "Square"].to_markdown(index=False))
-    
-    print("\n--- Resultados: K Fijo (8192) ---")
-    print(df[df["Type"] == "Fixed_K"].sort_values("TFLOPS", ascending=False).head(5).to_markdown(index=False))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mnk", type=str, default=None,
+                        help="Tamano custom: 'N' o 'M,N,K'. NO guarda CSV.")
+    parser.add_argument("--sizes", type=str, default=None,
+                        help="Lista de tamanos para el sweep, ej '1024,2048,4096'.")
+    parser.add_argument("--no-save", action="store_true",
+                        help="Ejecuta el sweep pero no escribe el CSV.")
+    args = parser.parse_args()
+
+    custom_tasks = None
+    save = not args.no_save
+    if args.mnk:
+        M, N, K = _parse_mnk(args.mnk)
+        custom_tasks = [("Custom", M, N, K)]
+        save = False
+    elif args.sizes:
+        dims = [int(x) for x in args.sizes.split(",")]
+        custom_tasks = ([("Square", d, d, d) for d in dims]
+                        + [("Fixed_K", d, d, 8192) for d in dims])
+
+    df = run_benchmarks(custom_tasks=custom_tasks)
+
+    if save:
+        filename = "../results/rtx4090_benchmark_jit.csv"
+        df.to_csv(filename, index=False)
+        print(f"\n✅ Benchmark completado. Guardado en {filename}")
+    else:
+        print("\n💾 Resultados NO guardados (--mnk o --no-save).")
+
+    if not df.empty:
+        print("\n--- Resultados ---")
+        print(df.to_markdown(index=False))

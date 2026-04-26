@@ -58,15 +58,15 @@ class MatMulModel(torch.nn.Module):
     def forward(self, a, b):
         return torch.matmul(a, b)
 
-def run_exhaustive_benchmark():
-    # --- DEFINICIÓN DE CASOS ---
-    dims_base = [ 8192] 
-    bench_1_combs = [("Square", d, d, d) for d in dims_base]
-    
-    K_fixed = 8192
-    bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
-
-    all_tasks = bench_1_combs + bench_2_combs
+def run_exhaustive_benchmark(custom_tasks=None, package_dir="aoti_compiled_models"):
+    if custom_tasks is not None:
+        all_tasks = custom_tasks
+    else:
+        dims_base = [8192]
+        bench_1_combs = [("Square", d, d, d) for d in dims_base]
+        K_fixed = 8192
+        bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
+        all_tasks = bench_1_combs + bench_2_combs
     
     print(f"🖥️  GPU: {torch.cuda.get_device_name(0)}")
     print(f"🚀 Modo: AOTI (Ahead-Of-Time Compilation via torch.export)")
@@ -79,7 +79,7 @@ def run_exhaustive_benchmark():
     model.eval()
 
     # Directorio para guardar los binarios AOTI generados
-    os.makedirs("aoti_compiled_models", exist_ok=True)
+    os.makedirs(package_dir, exist_ok=True)
 
     for label, M, N, K in tqdm(all_tasks, desc="Benchmarking"):
         dtype = torch.float16
@@ -93,7 +93,7 @@ def run_exhaustive_benchmark():
             b = torch.zeros((K, N), device=device, dtype=dtype)
 
             # Nombre del archivo donde se guardará el modelo pre-compilado
-            package_path = f"aoti_compiled_models/matmul_{label}_{M}_{N}_{K}.pt2"
+            package_path = os.path.join(package_dir, f"matmul_{label}_{M}_{N}_{K}.pt2")
 
             # ==========================================================
             # FASE AOTI (AHEAD-OF-TIME INDUCTION)
@@ -171,18 +171,54 @@ def run_exhaustive_benchmark():
 
     return pd.DataFrame(results)
 
+def _parse_mnk(s):
+    parts = [p for p in s.replace("x", ",").split(",") if p.strip()]
+    if len(parts) == 1:
+        d = int(parts[0]); return d, d, d
+    if len(parts) == 3:
+        return int(parts[0]), int(parts[1]), int(parts[2])
+    raise SystemExit("Usa --mnk N o --mnk M,N,K")
+
+
 if __name__ == "__main__":
+    import argparse, tempfile
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mnk", type=str, default=None,
+                        help="Tamano custom: 'N' o 'M,N,K'. NO guarda CSV ni .pt2.")
+    parser.add_argument("--sizes", type=str, default=None)
+    parser.add_argument("--no-save", action="store_true")
+    args = parser.parse_args()
+
     try:
         import triton
         print(f"✅ Triton versión {triton.__version__} detectada.")
     except ImportError:
         print("⚠️ Advertencia: Triton no instalado.")
 
-    df = run_exhaustive_benchmark()
-    
-    filename = "../unique_results/rtx4090_torch_aoti_benchmark.csv"
-    df.to_csv(filename, index=False)
-    
-    print(f"\n✅ Benchmark completado. Guardado en {filename}")
-    print("\n🔥 Top 5 Rendimiento (TFLOPS) AOTI:")
-    print(df.sort_values(by="TFLOPS", ascending=False).head(5).to_markdown())
+    custom_tasks = None
+    save = not args.no_save
+    if args.mnk:
+        M, N, K = _parse_mnk(args.mnk)
+        custom_tasks = [("Custom", M, N, K)]
+        save = False
+    elif args.sizes:
+        dims = [int(x) for x in args.sizes.split(",")]
+        custom_tasks = ([("Square", d, d, d) for d in dims]
+                        + [("Fixed_K", d, d, 8192) for d in dims])
+
+    if args.mnk:
+        with tempfile.TemporaryDirectory() as tmp:
+            df = run_exhaustive_benchmark(custom_tasks=custom_tasks, package_dir=tmp)
+    else:
+        df = run_exhaustive_benchmark(custom_tasks=custom_tasks)
+
+    if save:
+        filename = "../unique_results/rtx4090_torch_aoti_benchmark.csv"
+        df.to_csv(filename, index=False)
+        print(f"\n✅ Benchmark completado. Guardado en {filename}")
+    else:
+        print("\n💾 Resultados NO guardados (--mnk o --no-save).")
+
+    if not df.empty:
+        print("\n--- Resultados ---")
+        print(df.to_markdown(index=False))

@@ -26,31 +26,17 @@ def matmul_fn(a, b):
     return torch.matmul(a, b)
 
 
-def run_benchmarks():
+def run_benchmarks(custom_tasks=None):
     results = []
-    
-    # --- DEFINICIÓN DE CASOS ---
-    
-    # Lista de dimensiones base
-    # Nota: 2046 no es potencia de 2. Para máximo rendimiento se suele usar 2048.
-    # Pero he dejado 2046 tal como pediste.
-    dims_base = [1024, 2046, 4096, 8192, 16384, 32768] 
-    
-    # Benchmark 1: Matrices Cuadradas (M = N = K)
-    # Genera: (1024,1024,1024), (2046,2046,2046)...
-    bench_1_combs = [("Square", d, d, d) for d in dims_base]
-    
-    # Benchmark 2: M y N varían, K fijo en 8192
-    # Genera: (1024, 1024, 8192), (1024, 2046, 8192)...
-    K_fixed = 8192
-    bench_2_combs = []
-    # Producto cartesiano solo de M y N
-    #mn_combs = list(itertools.product(dims_base, dims_base)) 
-    for i in dims_base:
-        bench_2_combs.append(("Fixed_K", i, i, K_fixed))
 
-    # Unimos ambas listas de tareas
-    all_tasks = bench_1_combs + bench_2_combs
+    if custom_tasks is not None:
+        all_tasks = custom_tasks
+    else:
+        dims_base = [1024, 2046, 4096, 8192, 16384, 32768]
+        bench_1_combs = [("Square", d, d, d) for d in dims_base]
+        K_fixed = 8192
+        bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
+        all_tasks = bench_1_combs + bench_2_combs
     
     print(f"🖥️  GPU: {torch.cuda.get_device_name(0)}")
     print(f"📊 Ejecutando {len(all_tasks)} pruebas específicas...")
@@ -117,18 +103,43 @@ def run_benchmarks():
 
     return pd.DataFrame(results)
 
+def _parse_mnk(s):
+    parts = [p for p in s.replace("x", ",").split(",") if p.strip()]
+    if len(parts) == 1:
+        d = int(parts[0]); return d, d, d
+    if len(parts) == 3:
+        return int(parts[0]), int(parts[1]), int(parts[2])
+    raise SystemExit("Usa --mnk N o --mnk M,N,K")
+
+
 if __name__ == "__main__":
-    df = run_benchmarks()
-    
-    filename = "../results/rtx4090_pytorch_eager.csv"
-    df.to_csv(filename, index=False)
-    
-    print(f"\n✅ Benchmark completado. Guardado en {filename}")
-    
-    # Mostrar tabla bonita en consola
-    print("\n--- Resultados: Matrices Cuadradas ---")
-    print(df[df["Type"] == "Square"].to_markdown(index=False))
-    
-    print("\n--- Resultados: K Fijo (8192) ---")
-    # Mostramos los mejores 5 del segundo benchmark
-    print(df[df["Type"] == "Fixed_K"].sort_values("TFLOPS", ascending=False).head(5).to_markdown(index=False))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mnk", type=str, default=None)
+    parser.add_argument("--sizes", type=str, default=None)
+    parser.add_argument("--no-save", action="store_true")
+    args = parser.parse_args()
+
+    custom_tasks = None
+    save = not args.no_save
+    if args.mnk:
+        M, N, K = _parse_mnk(args.mnk)
+        custom_tasks = [("Custom", M, N, K)]
+        save = False
+    elif args.sizes:
+        dims = [int(x) for x in args.sizes.split(",")]
+        custom_tasks = ([("Square", d, d, d) for d in dims]
+                        + [("Fixed_K", d, d, 8192) for d in dims])
+
+    df = run_benchmarks(custom_tasks=custom_tasks)
+
+    if save:
+        filename = "../results/rtx4090_pytorch_eager.csv"
+        df.to_csv(filename, index=False)
+        print(f"\n✅ Benchmark completado. Guardado en {filename}")
+    else:
+        print("\n💾 Resultados NO guardados (--mnk o --no-save).")
+
+    if not df.empty:
+        print("\n--- Resultados ---")
+        print(df.to_markdown(index=False))

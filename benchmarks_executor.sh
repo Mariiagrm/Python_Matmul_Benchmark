@@ -2,6 +2,9 @@
 # Uso: ./ejecutador_benchmarks.sh --a fp16 --profile 
 #      ./ejecutador_benchmarks.sh --a fp32
 
+#nsys profile -t cuda,nvtx -o perfil_eager python /fp16_fp16_to_fp16/benchmarks/benchmark_aot_compile.py --size 1024,1024,8192 --no-save
+#nsys profile -t cuda,nvtx -o perfil_eager python benchmark_aot_compile.py --size 1024,1024,8192 --no-save
+
 # 1. Variables por defecto
 DO_PROFILE=false
 ARCH_MODE="fp16" # Valor por defecto

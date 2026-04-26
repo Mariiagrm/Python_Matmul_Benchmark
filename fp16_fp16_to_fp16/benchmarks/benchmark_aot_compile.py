@@ -1,3 +1,5 @@
+import argparse
+import tempfile
 import torch
 import pandas as pd
 import time
@@ -59,22 +61,80 @@ class MatMulModel(torch.nn.Module):
     def forward(self, a, b):
         return torch.matmul(a, b)
 
-def run_exhaustive_benchmark():
+def _bench_one(model, label, M, N, K, dtype, package_dir):
+    """Compila + mide un caso. Devuelve dict de resultado o None si falla."""
+    try:
+        torch.cuda.empty_cache()
+        a = torch.zeros((M, K), device=device, dtype=dtype)
+        b = torch.zeros((K, N), device=device, dtype=dtype)
+
+        package_path = os.path.join(package_dir, f"matmul_{label}_{M}_{N}_{K}.pt2")
+        ep = export(model, (a, b))
+        torch._inductor.aoti_compile_and_package(ep, package_path=package_path)
+        fast_matmul = load_aoti_model(package_path)
+
+        for _ in range(10):
+            fast_matmul(a, b)
+        torch.cuda.synchronize()
+
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        iters = 100 if (M*N*K) < (8192**3) else 10
+        start.record()
+        for _ in range(iters):
+            fast_matmul(a, b)
+        end.record()
+        torch.cuda.synchronize()
+
+        avg_time_ms = start.elapsed_time(end) / iters
+        avg_time_sec = avg_time_ms / 1000.0
+        flops = 2.0 * M * N * K
+        tflops = flops / (avg_time_sec * 1e12)
+        del a, b, fast_matmul
+        return {"Type": label, "M": M, "N": N, "K": K,
+                "Time_ms": avg_time_ms, "TFLOPS": tflops}
+    except RuntimeError as e:
+        if "out of memory" in str(e):
+            print(f"\n⚠️ OOM en {M}x{N}x{K}. Saltando.")
+            torch.cuda.empty_cache()
+        else:
+            print(f"\n❌ Error de ejecución en {M}x{N}x{K}: {e}")
+        return None
+    except Exception as e:
+        print(f"\n❌ Error de AOTI Compilación en {M}x{N}x{K}: {e}")
+        return None
+
+
+def run_one_shot(M, N, K, dtype=torch.float16):
+    """Ejecuta un unico caso (M,N,K) sin escribir CSV ni dejar .pt2 en disco."""
+    print(f"🖥️  GPU: {torch.cuda.get_device_name(0)}")
+    print(f"🚀 Modo: AOTI one-shot — {M}x{N}x{K} (sin guardar resultados)")
+    model = MatMulModel().to(device)
+    model.eval()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        res = _bench_one(model, "Custom", M, N, K, dtype, tmpdir)
+    if res is not None:
+        print(f"\n⏱️  Tiempo medio : {res['Time_ms']:.4f} ms")
+        print(f"🔥 Rendimiento  : {res['TFLOPS']:.2f} TFLOPS")
+    return res
+
+
+def run_exhaustive_benchmark(custom_dims=None):
     # --- DEFINICIÓN DE CASOS ---
-    dims_base = [1024, 2046, 4096, 8192, 16384, 32768] 
+    dims_base = custom_dims if custom_dims else [1024, 2046, 4096, 8192, 16384, 32768]
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
-    
+
     K_fixed = 8192
     bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]
 
     all_tasks = bench_1_combs + bench_2_combs
-    
+
     print(f"🖥️  GPU: {torch.cuda.get_device_name(0)}")
     print(f"🚀 Modo: AOTI (Ahead-Of-Time Compilation via torch.export)")
     print(f"📊 Ejecutando {len(all_tasks)} pruebas específicas...")
-    
+
     results = []
-    
+
     # Instanciamos el modelo base
     model = MatMulModel().to(device)
     model.eval()
@@ -83,100 +143,53 @@ def run_exhaustive_benchmark():
     os.makedirs("aoti_compiled_models", exist_ok=True)
 
     for label, M, N, K in tqdm(all_tasks, desc="Benchmarking"):
-        dtype = torch.float16
-        dtype_str = "fp16" 
-            
-        try:
-            torch.cuda.empty_cache()
-
-            # Crear tensores (usamos zeros para evitar NaN/Inf durante el profiling de Triton)
-            a = torch.zeros((M, K), device=device, dtype=dtype)
-            b = torch.zeros((K, N), device=device, dtype=dtype)
-
-            # Nombre del archivo donde se guardará el modelo pre-compilado
-            package_path = f"aoti_compiled_models/matmul_{label}_{M}_{N}_{K}.pt2"
-
-            # ==========================================================
-            # FASE AOTI (AHEAD-OF-TIME INDUCTION)
-            # ==========================================================
-            
-            # 1. Exportar el modelo capturando su grafo (ExportedProgram)
-            # Pasamos un ejemplo de los tensores para que el compilador fije las formas (static shapes)
-            ep = export(model, (a, b))
-            
-          
-            
-            # 2. Compilar y empaquetar el grafo en un binario para el disco
-            torch._inductor.aoti_compile_and_package(ep, package_path=package_path)
-            
-            # 3. Cargar la función/modelo compilado desde el disco
-            # --- USAMOS LA FUNCIÓN DE CARGA ROBUSTA ---
-            fast_matmul = load_aoti_model(package_path)
-            
-            # ==========================================================
-
-            # --- WARM-UP ---
-            for _ in range(10):
-                fast_matmul(a, b)
-            
-            torch.cuda.synchronize()
-
-            # --- MEDICIÓN ---
-            start = torch.cuda.Event(enable_timing=True)
-            end = torch.cuda.Event(enable_timing=True)
-
-            # Ajuste de iteraciones para no eternizar tamaños 32k
-            iters = 100 if (M*N*K) < (8192**3) else 10
-            
-            start.record()
-            for _ in range(iters):
-                # Llamamos a la función cargada vía AOTI
-                fast_matmul(a, b) 
-            end.record()
-
-            torch.cuda.synchronize()
-            
-            avg_time_ms = start.elapsed_time(end) / iters
-            avg_time_sec = avg_time_ms / 1000.0
-            
-            flops = 2.0 * M * N * K
-            tflops = flops / (avg_time_sec * 1e12)
-
-            results.append({
-                "Type": label,
-                "M": M, "N": N, "K": K,
-                "Time_ms": avg_time_ms,
-                "TFLOPS": tflops
-            })
-
-            # Limpiar referencias explícitamente
-            del a, b, fast_matmul
-
-        except RuntimeError as e:
-            if "out of memory" in str(e):
-                print(f"\n⚠️ OOM en {M}x{N}x{K}. Saltando.")
-                torch.cuda.empty_cache()
-            else:
-                print(f"\n❌ Error de ejecución en {M}x{N}x{K}: {e}")
-            continue
-        except Exception as e:
-            print(f"\n❌ Error de AOTI Compilación en {M}x{N}x{K}: {e}")
-            continue
+        res = _bench_one(model, label, M, N, K, torch.float16, "aoti_compiled_models")
+        if res is not None:
+            results.append(res)
 
     return pd.DataFrame(results)
 
+def _parse_mnk(s):
+    parts = [p for p in s.replace("x", ",").split(",") if p.strip()]
+    if len(parts) == 1:
+        d = int(parts[0]); return d, d, d
+    if len(parts) == 3:
+        return int(parts[0]), int(parts[1]), int(parts[2])
+    raise argparse.ArgumentTypeError("Usa --mnk N  o  --mnk M,N,K")
+
+
 if __name__ == "__main__":
+    #python benchmark_aot_compile.py --mnk 8192 --no-save
+    parser = argparse.ArgumentParser(description="Benchmark AOTI matmul fp16")
+    parser.add_argument("--mnk", type=_parse_mnk, default=None,
+                        help="Tamano unico: '8192' (cuadrada) o 'M,N,K'. NO guarda resultados.")
+    parser.add_argument("--sizes", type=str, default=None,
+                        help="Lista de tamanos para el sweep, ej: '1024,2048,4096'")
+    parser.add_argument("--no-save", action="store_true",
+                        help="Ejecuta el sweep pero no escribe el CSV.")
+    args = parser.parse_args()
+
     try:
         import triton
         print(f"✅ Triton versión {triton.__version__} detectada.")
     except ImportError:
         print("⚠️ Advertencia: Triton no instalado.")
 
-    df = run_exhaustive_benchmark()
-    
-    filename = "../results/rtx4090_torch_aoti_benchmark.csv"
-    df.to_csv(filename, index=False)
-    
-    print(f"\n✅ Benchmark completado. Guardado en {filename}")
-    print("\n🔥 Top 5 Rendimiento (TFLOPS) AOTI:")
-    print(df.sort_values(by="TFLOPS", ascending=False).head(5).to_markdown())
+    # Modo one-shot: tamano arbitrario, sin escribir nada en disco
+    if args.mnk is not None:
+        M, N, K = args.mnk
+        run_one_shot(M, N, K)
+    else:
+        custom_dims = ([int(x) for x in args.sizes.split(",")]
+                       if args.sizes else None)
+        df = run_exhaustive_benchmark(custom_dims=custom_dims)
+
+        if args.no_save:
+            print("\n💾 --no-save activo: no se escribe CSV.")
+        else:
+            filename = "../results/rtx4090_torch_aoti_benchmark.csv"
+            df.to_csv(filename, index=False)
+            print(f"\n✅ Benchmark completado. Guardado en {filename}")
+
+        print("\n🔥 Top 5 Rendimiento (TFLOPS) AOTI:")
+        print(df.sort_values(by="TFLOPS", ascending=False).head(5).to_markdown())
