@@ -6,6 +6,25 @@ We compared the performance of different PyTorch compilation strategies (Eager, 
 - **First Version**: FP16/FP32
 - **Second Version**: FP16/FP16
 
+## 📐 Roofline Analysis
+
+![Roofline comparison](./background/roofline_plots/roofline_comparison.png)
+
+The roofline above (RTX 4090, BW = 1.008 TB/s) shows the four precision regimes evaluated and locates two reference matmuls on each curve:
+
+- **4096 × 8192 × 4096** — AI ≈ **1638 FLOP/B**, far above every ridge point. **Compute-bound**: the workload sits on the flat ceiling for all formats, so peak TFLOPS is the limit.
+- **132 × 516 × 4096** — AI ≈ **102.5 FLOP/B**, below the FP16 (≈ 163.9) and FP32 (≈ 81.9) ridge points for the Tensor Core formats. **Memory-bound**: the workload sits on the diagonal slope, leaving compute units idle.
+
+**Ridge points (`I_crit = R_peak / β_mem`)**:
+
+| Format | R_peak (TFLOPS) | I_crit (FLOP/B) |
+|---|---|---|
+| FP32 (CUDA cores) | 82.6 | 81.9 |
+| FP16 + FP32 acc (TC) | 165.2 | 163.9 |
+
+A GEMM reaches its ridge when M ≳ 3·I_crit — roughly **M ≈ 246** for FP32 and **M ≈ 492** for FP16 Tensor Core. Below those sizes (and always when M = 1 or N = 1, since matvec AI < 1 FLOP/B), the operation is memory-bound regardless of architecture.
+
+
 ## 🔬 Testing Methodology
 To ensure accurate measurements and avoid thermal throttling, all matrices were initialized to 0. Random data increases transistor switching activity, forcing the hardware to reduce clock frequencies due to power limitations.
 
