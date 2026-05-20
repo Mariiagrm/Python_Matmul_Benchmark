@@ -1,6 +1,6 @@
 #!/bin/bash
-# Uso: ./ejecutador_benchmarks.sh --a fp16 --profile 
-#      ./ejecutador_benchmarks.sh --a fp32
+# Uso: ./benchmark_executor.sh --a fp16 --profile 
+#      ./benchmark_executor.sh --a fp32
 
 #nsys profile -t cuda,nvtx -o perfil_eager python /fp16_fp16_to_fp16/benchmarks/benchmark_aot_compile.py --size 1024,1024,8192 --no-save
 #nsys profile -t cuda,nvtx -o perfil_eager python benchmark_aot_compile.py --size 1024,1024,8192 --no-save
