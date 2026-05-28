@@ -31,7 +31,7 @@ To ensure accurate measurements and avoid thermal throttling, all matrices were 
 The study is divided into two main phases:
 
 **Phase 1: Square Matrices (Full Scaling)**
-Analyze the hardware's response to incremental loads. Small (1024, 2046), medium (4096, 8192), and large (16384, 32768) dimensions were tested.
+Analyze the hardware's response to incremental loads. Small (1024, 2048), medium (4096, 8192), and large (16384, 32768) dimensions were tested.
 
 **Phase 2: Non-Square Matrices (Partial Load / Fixed-K)**
 Designed to maintain sustained arithmetic intensity. The internal dimension was fixed at K=8192 to ensure Tensor Core saturation, while varying the M and N dimensions.
@@ -189,21 +189,21 @@ The benchmark covers the evolutionary progression of all kernels developed in th
 | Fixed_K | 16384 | 16384 | 8192  | 27.43             | 160.3371           | benchmark_mma-matmul         |
 | Square  | 32768 | 32768 | 32768 | 438.97            | 160.3042           | benchmark_mma-matmul         |
 | Square  | 4096  | 4096  | 4096  | 0.8586966705322265| 160.05530030390628 | rtx4090_pytorch_eager        |
-| Fixed_K | 2046  | 2046  | 8192  | 0.4285235214233398| 160.05031489565383 | rtx4090_pytorch_eager        |
+| Fixed_K | 2048  | 2048  | 8192  | 0.4285235214233398| 160.05031489565383 | rtx4090_pytorch_eager        |
 | Fixed_K | 4096  | 4096  | 8192  | 1.718074951171875 | 159.99180172931898 | rtx4090_torch_aoti_benchmark |
 | Square  | 4096  | 4096  | 4096  | 0.8640716552734375| 159.05967130527748 | rtx4090_torch_aoti_benchmark |
 | Square  | 8192  | 8192  | 8192  | 7.004569244384766 | 156.97062723127863 | rtx4090_torch_aoti_benchmark |
-| Fixed_K | 2046  | 2046  | 8192  | 0.4376678466796875| 156.7063357848058  | rtx4090_torch_aoti_benchmark |
+| Fixed_K | 2048  | 2048  | 8192  | 0.4376678466796875| 156.7063357848058  | rtx4090_torch_aoti_benchmark |
 | Fixed_K | 8192  | 8192  | 8192  | 7.073792266845703 | 155.4345372749102  | rtx4090_torch_aoti_benchmark |
 | Fixed_K | 4096  | 4096  | 8192  | 1.77              | 155.2983           | benchmark_mma-matmul         |
 | Fixed_K | 32768 | 32768 | 8192  | 114.66            | 153.4291           | benchmark_mma-matmul         |
 | Square  | 4096  | 4096  | 4096  | 0.89738           | 153.1558           | benchmark_mma-matmul         |
-| Square  | 2046  | 2046  | 2046  | 0.1132630443572998| 151.23720865177324 | rtx4090_pytorch_eager        |
-| Fixed_K | 2046  | 2046  | 8192  | 0.46365           | 147.9248           | benchmark_mma-matmul         |
+| Square  | 2048  | 2048  | 2048  | 0.1132630443572998| 151.23720865177324 | rtx4090_pytorch_eager        |
+| Fixed_K | 2048  | 2048  | 8192  | 0.46365           | 147.9248           | benchmark_mma-matmul         |
 | Fixed_K | 1024  | 1024  | 8192  | 0.1180160045623779| 145.57236747427334 | rtx4090_pytorch_eager        |
-| Square  | 2046  | 2046  | 2046  | 0.1209424018859863| 141.6342523786508  | rtx4090_torch_aoti_benchmark |
+| Square  | 2048  | 2048  | 2048  | 0.1209424018859863| 141.6342523786508  | rtx4090_torch_aoti_benchmark |
 | Fixed_K | 1024  | 1024  | 8192  | 0.128089599609375 | 134.1238417201094  | rtx4090_torch_aoti_benchmark |
-| Square  | 2046  | 2046  | 2046  | 0.14605           | 117.2858           | benchmark_mma-matmul         |
+| Square  | 2048  | 2048  | 2048  | 0.14605           | 117.2858           | benchmark_mma-matmul         |
 
 
 
@@ -215,18 +215,18 @@ The benchmark covers the evolutionary progression of all kernels developed in th
 
 | Type     | M     | N     | K     | Time_ms           | TFLOPS              | Mode                               |
 |----------|-------|-------|-------|-------------------|---------------------|------------------------------------|
-| Fixed_K  | 2046  | 2046  | 8192  | 0.218757          | 313.523             | rtx4090_benchmark_cuda             |
-| Fixed_K  | 2046  | 2046  | 8192  | 0.2234582328796386| 306.92681876233274  | rtx4090_pytorch_eager     |
+| Fixed_K  | 2048  | 2048  | 8192  | 0.218757          | 313.523             | rtx4090_benchmark_cuda             |
+| Fixed_K  | 2048  | 2048  | 8192  | 0.2234582328796386| 306.92681876233274  | rtx4090_pytorch_eager     |
 | Square   | 32768 | 32768 | 32768 | 235.171           | 299.224             | rtx4090_benchmark_cuda             |
 | Square   | 32768 | 32768 | 32768 | 235.449658203125  | 298.8695957968055   | rtx4090_torch_aoti_benchmark (fp16)|
 | Square   | 32768 | 32768 | 32768 | 235.61572265625   | 298.6589493449383   | rtx4090_pytorch_eager     |
 | Square   | 16384 | 16384 | 16384 | 29.808            | 295.091             | rtx4090_benchmark_cuda             |
 | Square   | 16384 | 16384 | 16384 | 29.87230224609375 | 294.45648178517007  | rtx4090_pytorch_eager     |
 | Square   | 16384 | 16384 | 16384 | 29.9085693359375  | 294.09942426229003  | rtx4090_torch_aoti_benchmark (fp16)|
-| Fixed_K  | 2046  | 2046  | 8192  | 0.240199031829834 | 285.5353913024446   | rtx4090_torch_aoti_benchmark       |
+| Fixed_K  | 2048  | 2048  | 8192  | 0.240199031829834 | 285.5353913024446   | rtx4090_torch_aoti_benchmark       |
 | Square   | 16384 | 16384 | 16384 | 31.73125          | 277.2060042452787   | rtx4090_benchmark_jit     |
 | Square   | 4096  | 4096  | 4096  | 0.5069100952148438| 271.1308272796367   | rtx4090_pytorch_eager     |
-| Square   | 2046  | 2046  | 2046  | 0.0637328004837036| 268.771912453149    | rtx4090_pytorch_eager     |
+| Square   | 2048  | 2048  | 2048  | 0.0637328004837036| 268.771912453149    | rtx4090_pytorch_eager     |
 | Square   | 4096  | 4096  | 4096  | 0.5204377746582032| 264.0833547531458   | rtx4090_torch_aoti_benchmark       |
 | Fixed_K  | 32768 | 32768 | 8192  | 67.36967163085937 | 261.12916418547184  | rtx4090_torch_aoti_benchmark       |
 | Fixed_K  | 32768 | 32768 | 8192  | 67.502548828125   | 260.615137499611    | rtx4090_pytorch_eager     |

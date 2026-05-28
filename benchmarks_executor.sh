@@ -1,6 +1,7 @@
 #!/bin/bash
 # Uso: ./benchmark_executor.sh --a fp16 --profile 
 #      ./benchmark_executor.sh --a fp32
+#       ./benchmark_executor.sh --a tf32 
 
 #nsys profile -t cuda,nvtx -o perfil_eager python /fp16_fp16_to_fp16/benchmarks/benchmark_aot_compile.py --size 1024,1024,8192 --no-save
 #nsys profile -t cuda,nvtx -o perfil_eager python benchmark_aot_compile.py --size 1024,1024,8192 --no-save
@@ -48,6 +49,8 @@ if [ "$ARCH_MODE" == "fp16" ]; then
     ROOT_DIR="$SCRIPT_DIR/fp16_fp16_to_fp16"
 elif [ "$ARCH_MODE" == "fp32" ]; then
     ROOT_DIR="$SCRIPT_DIR/fp16_fp16_to_fp32"
+elif [ "$ARCH_MODE" == "tf32" ]; then
+    ROOT_DIR="$SCRIPT_DIR/tf32"
 else
     echo "❌ Error: Modo de arquitectura '$ARCH_MODE' no reconocido."
     echo "Usa 'fp16' o 'fp32'."
@@ -103,7 +106,7 @@ run_benchmarks() {
         echo "✅ Completado: cuda FP16/FP16"
         echo "--------------------------------------------------------"
 
-    else
+    elif [ "$ARCH_MODE" == "fp32" ]; then
         echo "▶️  Ejecutando: FP16/FP32 Benchmark"
         python ./benchmark_fp16_fp32.py
         echo "✅ Completado: FP16/FP32"
@@ -122,6 +125,11 @@ run_benchmarks() {
         else
             echo "⚠️  Advertencia: No se encontró ./mma-matmul/ejecutador.sh"
         fi
+
+    elif [ "$ARCH_MODE" == "tf32" ]; then
+        echo "▶️  Ejecutando: TF32 Benchmark"
+        python ./benchmark_tf32.py
+        echo "✅ Completado: TF32"
     fi
     echo "▶️  Ejecutando: AOT Compile Benchmark"
     export TRITON_NUM_STAGES=3

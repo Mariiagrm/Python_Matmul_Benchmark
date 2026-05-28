@@ -1,11 +1,11 @@
 Type,M,N,K,Time_ms,TFLOPS
 Square,1024,1024,1024,seconds:,163.126
-Square,2046,2046,2046,seconds:,163.12
+Square,2048,2048,2048,seconds:,163.12
 Square,4096,4096,4096,seconds:,163.107
 Square,8192,8192,8192,seconds:,163.095
 Square,16384,16384,16384,seconds:,163.094
 Square,32768,32768,32768,seconds:,163.083
 Fixed_K,1024,1024,8192,seconds:,163.096
-Fixed_K,2046,2046,8192,seconds:,163.096
+Fixed_K,2048,2048,8192,seconds:,163.096
 Fixed_K,4096,4096,8192,seconds:,163.072
 Fixed_K,8192,8192,8192,seconds:,163.062

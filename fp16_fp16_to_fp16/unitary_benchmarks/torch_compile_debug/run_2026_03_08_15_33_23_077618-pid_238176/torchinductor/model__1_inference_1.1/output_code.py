@@ -52,11 +52,11 @@ def call(args):
 def benchmark_compiled_module(times=10, repeat=10):
     from torch._dynamo.testing import rand_strided
     from torch._inductor.utils import print_performance
-    arg0_1 = 2046
-    arg1_1 = 2046
-    arg2_1 = rand_strided((2046, 2046), (2046, 1), device='cuda:0', dtype=torch.float16)
-    arg3_1 = 2046
-    arg4_1 = rand_strided((2046, 2046), (2046, 1), device='cuda:0', dtype=torch.float16)
+    arg0_1 = 2048
+    arg1_1 = 2048
+    arg2_1 = rand_strided((2048, 2048), (2048, 1), device='cuda:0', dtype=torch.float16)
+    arg3_1 = 2048
+    arg4_1 = rand_strided((2048, 2048), (2048, 1), device='cuda:0', dtype=torch.float16)
     fn = lambda: call([arg0_1, arg1_1, arg2_1, arg3_1, arg4_1])
     return print_performance(fn, times=times, repeat=repeat)
 

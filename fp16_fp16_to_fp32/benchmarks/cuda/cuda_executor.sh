@@ -20,7 +20,7 @@ fi
 echo "Type,M,N,K,Time_ms,TFLOPS" > "$OUTPUT_FILE"
 
 # Lista de dimensiones
-dims_base=(1024 2046 4096 8192 16384 32768)
+dims_base=(1024 2048 4096 8192 16384 32768)
 
 
 echo "🚀 Iniciando Benchmark... Los datos se guardarán en $OUTPUT_FILE"

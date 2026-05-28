@@ -32,7 +32,7 @@ def run_benchmarks(custom_tasks=None):
     if custom_tasks is not None:
         all_tasks = custom_tasks
     else:
-        dims_base = [1024, 2046, 4096, 8192, 16384, 32768]
+        dims_base = [1024, 2048, 4096, 8192, 16384, 32768]
         bench_1_combs = [("Square", d, d, d) for d in dims_base]
         K_fixed = 8192
         bench_2_combs = [("Fixed_K", i, i, K_fixed) for i in dims_base]

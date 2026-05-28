@@ -121,7 +121,7 @@ def run_one_shot(M, N, K, dtype=torch.float16):
 
 def run_exhaustive_benchmark(custom_dims=None):
     # --- DEFINICIÓN DE CASOS ---
-    dims_base = custom_dims if custom_dims else [1024, 2046, 4096, 8192, 16384, 32768]
+    dims_base = custom_dims if custom_dims else [1024, 2048, 4096, 8192, 16384, 32768]
     bench_1_combs = [("Square", d, d, d) for d in dims_base]
 
     K_fixed = 8192
