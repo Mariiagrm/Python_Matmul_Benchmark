@@ -1,0 +1,71 @@
+import pandas as pd
+import os
+from pathlib import Path
+
+script_dir = Path(__file__).parent.resolve()
+os.chdir(script_dir)
+
+# Initial configuration
+csv_files = [
+    "../results/benchmark_mma-matmul_tf32.csv",
+    "../results/rtx4090_benchmark_jit_tf32.csv",
+    "../results/rtx4090_pytorch_eager_tf32.csv",
+    "../results/rtx4090_torch_aoti_benchmark_tf32.csv",
+    "../results/rtx4090_benchmark_cuda_tf32.csv"
+]
+
+# Dictionary for readable names
+kernels_names = {
+    "../results/benchmark_mma-matmul_tf32.csv": "MMA MatMul with kernel 3.1",
+    "../results/rtx4090_benchmark_jit_tf32.csv": "Torch JIT",
+    "../results/rtx4090_pytorch_eager_tf32.csv": "PyTorch Eager",
+    "../results/rtx4090_torch_aoti_benchmark_tf32.csv": "Torch AOTI",
+    "../results/rtx4090_benchmark_cuda_tf32.csv": "Native CUDA"
+}
+# RTX 4090 TF32 Tensor Core peak throughput (dense, sin sparsity)
+pp_base_tf32 = 82.6
+
+# Load all CSVs and tag each row with its kernel name
+dataframes = []
+for file in csv_files:
+    if not os.path.exists(file):
+        print(f"⚠️ Warning: File '{file}' not found.")
+        continue
+    df = pd.read_csv(file)
+    df = df.dropna(subset=[ "TFLOPS"])
+    df["Kernel"] = kernels_names[file]
+    dataframes.append(df)
+
+df_all = pd.concat(dataframes, ignore_index=True)
+
+# Group by matrix size (Type, M, N, K) so we compare kernels on the same workload
+configs = df_all.groupby(["Type", "M", "N", "K"])
+
+rows = []
+for (typ, M, N, K), group in configs:
+    for _, row in group.iterrows():
+        rows.append({
+            "Type": typ,
+            "M": M, "N": N, "K": K,
+            "Kernel": row["Kernel"],
+            "Execution Time (ms)": round(row["Time_ms"], 4),
+            "TFLOP/s": round(row["TFLOPS"], 2),
+            "% 4090 peak TF32": round(row["TFLOPS"] / pp_base_tf32 * 100, 2),
+        })
+
+result = (
+    pd.DataFrame(rows)
+    .sort_values(by=["Type", "M", "N", "K", "TFLOP/s"], ascending=[True, True, True, True, False])
+    .reset_index(drop=True)
+)
+
+# Print one table per matrix configuration
+for (typ, M, N, K), group in result.groupby(["Type", "M", "N", "K"], sort=False):
+    print(f"\n{'='*60}")
+    print(f"  {typ} — {M}x{N}x{K}")
+    print(f"{'='*60}")
+    print(group[["Kernel", "Execution Time (ms)", "TFLOP/s", "% 4090 peak TF32"]].to_markdown(index=False))
+
+output_path = "../results/peak_performance_summary.csv"
+result.to_csv(output_path, index=False)
+print(f"\n✅ Saved to {output_path}")

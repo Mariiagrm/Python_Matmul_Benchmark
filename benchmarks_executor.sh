@@ -29,13 +29,13 @@ while [[ "$#" -gt 0 ]]; do
             shift
             ;;
         -h|--help)
-            echo "Uso: $0 [--a fp16 | fp32] [--profile]"
+            echo "Uso: $0 [--a fp16 | fp32 | tf32] [--profile]"
             exit 0
             ;;
         *)
             echo "❌ Argumento desconocido: $1"
-            echo "Uso: $0 [--a fp16 | fp32] [--profile] [--sb]"
-            echo "  --a [fp16|fp32]   : Especifica el modo de arquitectura (predeterminado: fp16)"
+            echo "Uso: $0 [--a fp16 | fp32 | tf32] [--profile] [--sb]"
+            echo "  --a [fp16|fp32|tf32]   : Especifica el modo de arquitectura (predeterminado: fp16)"
             echo "  --profile         : Activa el modo de profiling con Nsight Systems y Compute"
             echo "  --sb              : Saltar ejecución de benchmarks (skip benchmarks)"
             echo "  -h, --help        : Muestra esta ayuda"
