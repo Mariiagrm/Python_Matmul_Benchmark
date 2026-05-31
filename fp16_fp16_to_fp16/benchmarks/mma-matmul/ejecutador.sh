@@ -1,4 +1,5 @@
 #!/bin/bash
+#sh ejecutador.sh 3
 
 # ==========================================
 # Configuración
@@ -8,7 +9,7 @@ RUNNER="./runner" # Ajusta la ruta a tu ejecutable
 
 # Arrays de datos
 dims_base=(1024 2048 4096 8192 16384 32768)
-kernels=(32)
+kernels=(33)
 
 K_FIXED=8192
 
@@ -42,16 +43,29 @@ run_and_save() {
     # ncu --set empty --metrics gpu__time_duration.sum -s 10 -c 1 -k regex:'^(?!shmem*)' --clock-control none --print-summary per-gpu ./runner 31 4096 4096 4096
     #read unit max_val <<< $(echo "$OUTPUT" | awk '/^ *gpu__time_duration.sum / {print $2, $4}')
 
-    local NCU_CMD="ncu --set empty --metrics gpu__time_duration.sum -s 10 -c 1 -k regex:'^(?!shmem*)' --clock-control none --print-summary per-gpu $RUNNER $kernel $m $n $k"    
-    # Capturar la salida completa de NCU
+    # --csv: salida CSV (parseable de forma robusta, sin tablas alineadas)
+    # -k regex:'^(?!shmem)': excluye el kernel de referencia shmem_matmul
+    local NCU_CMD="ncu --csv --metrics gpu__time_duration.sum -s 10 -c 1 -k regex:'^(?!shmem)' --clock-control none $RUNNER $kernel $m $n $k"
     OUTPUT=$(eval $NCU_CMD 2>&1)
 
-    # Buscar la fila "Duration", coger la Unidad (columna 2) y el Maximum (columna 4)
-    read unit max_val <<< $(echo "$OUTPUT" | awk '/^ *gpu__time_duration.sum / {print $2, $4}')
+    # En --csv, la fila de la metrica tiene la unidad y el valor en los
+    # ultimos 2 campos (Metric Unit, Metric Value). Quitamos comillas y
+    # separadores de miles.
+    read unit max_val <<< $(echo "$OUTPUT" | awk -F',' '
+        /gpu__time_duration\.sum/ {
+            u = $(NF-1); v = $NF;
+            gsub(/"/, "", u); gsub(/"/, "", v);
+            gsub(/[ \r]/, "", u); gsub(/[ \r]/, "", v);
+            # ncu puede meter coma como separador de miles dentro de comillas:
+            # ahora ya estan separadas como campos -> el ultimo campo es el valor numerico
+            print u, v; exit
+        }')
 
-    # Control de errores (por si hay OOM en matrices gigantes)
     if [ -z "$max_val" ]; then
-        echo "      ❌ Error: No se extrajo la Duración (Posible Out Of Memory)."
+        echo "      ❌ Error: NCU no devolvio gpu__time_duration.sum."
+        echo "      --- Salida cruda de NCU (primeras 30 lineas) ---"
+        echo "$OUTPUT" | head -30 | sed 's/^/        /'
+        echo "      ---"
         return
     fi
 

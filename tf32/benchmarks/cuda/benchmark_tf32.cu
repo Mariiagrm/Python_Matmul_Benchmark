@@ -3,7 +3,7 @@
 #include <cstdlib> // Para std::atoi
 #include <cuda_runtime.h>
 #include <cublas_v2.h>
-#include <cuda_fp16.h>
+#include <cuda_tf32.h>
 
 const int N_ITER = 100; // Número de iteraciones para promediar
 const int N_WARMUP = 10; // Iteraciones de calentamiento
@@ -24,7 +24,7 @@ void checkCublas(cublasStatus_t result, const char* func) {
 
 int main(int argc, char* argv[]) {
     // 1. Parsear los argumentos de la terminal
-    // ./benchmark_fp16 
+    // ./benchmark_tf32 
 
     int M = 16384;
     int N = 16384;
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    std::cout << "--- Benchmark RTX 4090 (FP16 / Tensor Cores) ---" << std::endl;
+    std::cout << "--- Benchmark RTX 4090 (tf32 / Tensor Cores) ---" << std::endl;
     std::cout << "Dimensiones (M x N x K): " << M << " x " << N << " x " << K << std::endl;
 
     // 2. Inicializar cuBLAS
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
     checkCuda(cudaMalloc(&d_B, size_B), "cudaMalloc B");
     checkCuda(cudaMalloc(&d_C, size_C), "cudaMalloc C");
 
-    checkCuda(cudaMemset(d_A, 0x3C00, size_A), "Init A"); // 1.0 en FP16
+    checkCuda(cudaMemset(d_A, 0x3C00, size_A), "Init A"); // 1.0 en tf32
     checkCuda(cudaMemset(d_B, 0x3C00, size_B), "Init B");
     checkCuda(cudaMemset(d_C, 0x0000, size_C), "Init C");
 
@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
     std::cout << "------------------------------------------------" << std::endl;
     std::cout << "Tiempo total: " << seconds << " s" << std::endl;
     std::cout << "Tiempo promedio por iteración: " << (avg_seconds * 1000.0) << " ms" << std::endl;
-    std::cout << "Rendimiento estimado: " << tflops << " TFLOPS (FP16)" << std::endl;
+    std::cout << "Rendimiento estimado: " << tflops << " TFLOPS (tf32)" << std::endl;
     std::cout << "------------------------------------------------" << std::endl;
 
     // Limpieza

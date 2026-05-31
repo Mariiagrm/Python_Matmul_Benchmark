@@ -117,10 +117,10 @@ float run_mma_kernel(int kernelNum, int numReps, half *A, half *B, half *B_T, fl
     for (int i=0; i<warm_reps; i++) {
     switch (kernelNum) {
      
-      case 32:
+      case 33:
         mma_grid.x = ceilDiv(M, 128);
         mma_grid.y = ceilDiv(N, 128);
-        mma_matmul_3_2<<<mma_grid, mma_block>>>(A, B_T, C, M, N, K);
+        mma_matmul_3_3<<<mma_grid, mma_block>>>(A, B_T, C, M, N, K);
         break;
       
     }
@@ -140,10 +140,10 @@ float run_mma_kernel(int kernelNum, int numReps, half *A, half *B, half *B_T, fl
   for (int i=0; i<numReps; i++) {
     switch (kernelNum) {
       
-      case 32:
+      case 33:
         mma_grid.x = ceilDiv(M, 128);
         mma_grid.y = ceilDiv(N, 128);
-        mma_matmul_3_2<<<mma_grid, mma_block>>>(A, B_T, C, M, N, K);
+        mma_matmul_3_3<<<mma_grid, mma_block>>>(A, B_T, C, M, N, K);
         break;
       
     }
@@ -179,10 +179,10 @@ int main(int argc, char **argv){
         exit(EXIT_FAILURE);
     }
   int kernelNum = atoi(argv[1]);
-  int validKernels[1] = {32};
+  int validKernels[1] = {33};
   bool validKernelNum = in_array(kernelNum, validKernels, 11);
   if (not validKernelNum) {
-    printf("Kernel Num: %d not recognized. Valid Kernel Nums:  32 \n", kernelNum);
+    printf("Kernel Num: %d not recognized. Valid  Kernel Nums:  33\n", kernelNum);
     exit(EXIT_FAILURE);
   }
 
@@ -232,7 +232,9 @@ printf(" Dimensiones: M=%d, N=%d, K=%d\n", M, N, K);
   cudaMemcpy(d_B_T, h_B_T, N * K * sizeof(half), cudaMemcpyHostToDevice);
   cudaCheckErrors("cudaMemcpy malloc / H2D failure");
 
- 
+  // Medir tiempo del kernel MMA: warmup + REPS reps, devuelve ms/iter.
+  avg_time_ms = run_mma_kernel(kernelNum, REPS, d_A, d_B, d_B_T, d_C2, M, N, K);
+  cudaCheckErrors("mma kernel launch failure");
 
   // --- CÁLCULO DE TFLOPS ---
     // Cast a double estricto para evitar Integer Overflow con matrices grandes

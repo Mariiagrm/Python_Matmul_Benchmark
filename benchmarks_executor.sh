@@ -106,6 +106,18 @@ run_benchmarks() {
         echo "✅ Completado: cuda FP16/FP16"
         echo "--------------------------------------------------------"
 
+        echo "▶️  Ejecutando: FP16/FP16 Matmul Benchmark (cuBLAS)"
+        if [ -f "./mma-matmul/ejecutador.sh" ]; then
+            cd "./mma-matmul" || exit 1
+            bash "./ejecutador.sh"
+            cp "./benchmark_mma-matmul.csv" "$ROOT_DIR/results/benchmark_mma-matmul.csv"
+             echo "✅ Completado: FP16/FP16 Matmul (cuBLAS)"
+             cd .. || exit 1
+         else
+             echo "⚠️  Advertencia: No se encontró ./mma-matmul/"
+             cd .. || exit 1
+         fi 
+
     elif [ "$ARCH_MODE" == "fp32" ]; then
         echo "▶️  Ejecutando: FP16/FP32 Benchmark"
         python ./benchmark_fp16_fp32.py
@@ -121,11 +133,13 @@ run_benchmarks() {
         if [ -f "./mma-matmul/ejecutador.sh" ]; then
             cd "./mma-matmul" || exit 1
             bash "./ejecutador.sh"
-            cd .. || exit 1
-        else
-            echo "⚠️  Advertencia: No se encontró ./mma-matmul/ejecutador.sh"
-        fi
-
+            cp "./benchmark_mma-matmul.csv" "$ROOT_DIR/results/benchmark_mma-matmul.csv"
+             echo "✅ Completado: FP16/FP32 Matmul (cuBLAS)"
+             cd .. || exit 1
+         else
+             echo "⚠️  Advertencia: No se encontró ./mma-matmul/"
+             cd .. || exit 1
+         fi
     elif [ "$ARCH_MODE" == "tf32" ]; then
         echo "▶️  Ejecutando: TF32 Benchmark"
         python ./benchmark_tf32.py

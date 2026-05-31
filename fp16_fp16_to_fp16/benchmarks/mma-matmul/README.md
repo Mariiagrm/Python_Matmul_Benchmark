@@ -18,10 +18,8 @@ For a M=N=4096 FP16/32 Matrix Multiplication
 ## Build instructions
 To compile the kernels run the following
 ```bash
-nvcc -c -arch=sm_89 -Xptxas="-v" kernel_1.cu
-nvcc -c -arch=sm_89 -Xptxas="-v" kernel_2.cu
 nvcc -c -arch=sm_89 -Xptxas="-v" kernel_3.cu
-nvcc -c -arch=sm_89 -Xptxas="-v" runner.cu && nvcc -lcublas -o runner runner.o kernel_1.o kernel_2.o kernel_3.o
+nvcc -c -arch=sm_89 -Xptxas="-v" runner.cu && nvcc -lcublas -o runner runner.o  kernel_3.o
 ```
 
 ## Running the benchmarks

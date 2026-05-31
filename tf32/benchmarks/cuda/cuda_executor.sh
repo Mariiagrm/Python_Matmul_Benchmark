@@ -5,13 +5,13 @@ export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 # Configuración de archivos
-BINARY="./benchmark_fp16"
+BINARY="./benchmark_tf32"
 OUTPUT_FILE="../../results/rtx4090_benchmark_cuda.csv"
 
 # Verificar binario
 if [ ! -f "$BINARY" ]; then
     echo "❌ Error: No se encuentra $BINARY. Compila antes de ejecutar."
-     nvcc -O3 -arch=sm_89 -lcublas benchmark_fp16.cu -o benchmark_fp16
+     nvcc -O3 -arch=sm_89 -lcublas benchmark_tf32.cu -o benchmark_tf32
     #exit 1
 fi
 

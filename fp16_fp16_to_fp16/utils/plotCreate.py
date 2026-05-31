@@ -22,7 +22,7 @@ tflops_col = "TFLOPS"
 
 # Dictionary for readable names
 method_names = {
-    "../results/benchmark_mma-matmul.csv": "MMA MatMul with kernel 3.2",
+    "../results/benchmark_mma-matmul.csv": "MMA MatMul with kernel 3.3",
     "../results/rtx4090_benchmark_jit.csv": "Torch JIT",
     "../results/rtx4090_pytorch_eager.csv": "PyTorch Eager",
     "../results/rtx4090_torch_aoti_benchmark.csv": "Torch AOTI",

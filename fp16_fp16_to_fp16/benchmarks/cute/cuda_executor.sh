@@ -4,21 +4,32 @@
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
+# Ruta a CUTLASS (sobreescribible con: CUTLASS_DIR=/otra/ruta ./cuda_executor.sh)
+: "${CUTLASS_DIR:=/opt/cutlass}"
+
 # Configuración de archivos
 BINARY_CUTE="./benchmark_cute_fp16"
-CUTE_DSL = ./cute_DSL/cute_DSL_fp16_to_fp16.py
+CUTE_SRC="./cute/benchmark_cute_fp16.cu"
+CUTE_SRC_JM="./cute/cute_jm.cu"
 OUTPUT_FILE_CUTE="../../results/rtx4090_benchmark_cute_fp16.csv"
 
 # Verificar binario
-if [ ! -f "$BINARY" ]; then
-    echo "❌ Error: No se encuentra $BINARY. Compila antes de ejecutar."
+if [ ! -f "$BINARY_CUTE" ]; then
+    echo "❌ Error: No se encuentra $BINARY_CUTE. Compila antes de ejecutar."
      nvcc -O3 -std=c++17 \
-        -I~/cutlass/include \
-        -I~/cutlass/tools/util/include \
+        -I"$CUTLASS_DIR"/include \
+        -I"$CUTLASS_DIR"/tools/util/include \
         --expt-relaxed-constexpr \
         -arch=sm_89 \
         -lcublas \
-        benchmark_cute_fp16.cu -o benchmark_cute_fp16
+        "$CUTE_SRC" -o benchmark_cute_fp16
+    nvcc -O3 -std=c++17 \
+        -I"$CUTLASS_DIR"/include \
+        -I"$CUTLASS_DIR"/tools/util/include \
+        --expt-relaxed-constexpr \
+        -arch=sm_89 \
+        -lcublas \
+        "$CUTE_SRC_JM" -o benchmark_cute_JM_fp16
     #exit 1
 fi
 
@@ -38,7 +49,7 @@ run_and_save() {
     local k=$4
 
     # Ejecutar y capturar salida
-    raw_output=$($BINARY $m $n $k)
+    raw_output=$($BINARY_CUTE $m $n $k)
 
     # Extraer solo los números usando awk
     #Tiempo promedio por iteración: 30.0801 ms

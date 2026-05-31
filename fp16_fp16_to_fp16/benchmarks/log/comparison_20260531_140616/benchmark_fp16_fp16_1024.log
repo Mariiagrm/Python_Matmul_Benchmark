@@ -1,0 +1,10 @@
+Versión: 2.7.0+cu128
+CUDA disponible: True
+Dispositivo: NVIDIA GeForce RTX 4090
+🖥️  GPU: NVIDIA GeForce RTX 4090
+📊 Ejecutando 1 pruebas específicas...
+Benchmarking:   0%|          | 0/1 [00:00<?, ?it/s]Benchmarking: 100%|██████████| 1/1 [00:00<00:00, 10.65it/s]
+
+⚠️ OOM en 1024x1024x1024. Saltando.
+
+💾 Resultados NO guardados (--mnk o --no-save).
