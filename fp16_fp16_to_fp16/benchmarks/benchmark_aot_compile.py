@@ -10,7 +10,7 @@ import torch._inductor
 from torch._inductor.package import load_package
 import os
 from pathlib import Path
-
+#python benchmark_aot_compile.py --mnk 8192 --no-save
 # Obtener la ruta absoluta del directorio donde está este script
 script_dir = Path(__file__).parent.resolve()
 

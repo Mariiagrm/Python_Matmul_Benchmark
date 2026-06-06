@@ -6,6 +6,8 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
 # Configuración de archivos
 # ./benchmark_fp32 16384 16384 16384
+
+# ./benchmark_fp32 4096 4096 4096
 BINARY="./benchmark_fp32"
 OUTPUT_FILE="../../results/rtx4090_benchmark_cuda.csv"
 
