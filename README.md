@@ -291,15 +291,15 @@ Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 
 **Kernel comparison at 4096 × 4096 × 4096:**
 
-![MMA kernels 4096](/fp16_fp16_to_fp32/benchmarks/mma-matmul/plots/mma_kernels_tflops_4096.png)
+![MMA kernels 4096](/fp16_fp16_to_fp32/plots/mma_kernels_tflops_4096.png)
 
 **Square matrices (full scaling):**
 
-![MMA kernels Square](/fp16_fp16_to_fp32/benchmarks/mma-matmul/plots/mma_kernels_tflops_square.png)
+![MMA kernels Square](/fp16_fp16_to_fp32/plots/mma_kernels_tflops_square.png)
 
 **Fixed-K (K = 8192):**
 
-![MMA kernels Fixed_K](/fp16_fp16_to_fp32/benchmarks/mma-matmul/plots/mma_kernels_tflops_fixed_k.png)
+![MMA kernels Fixed_K](/fp16_fp16_to_fp32/plots/mma_kernels_tflops_fixed_k.png)
 
 ## Results Eager
 
