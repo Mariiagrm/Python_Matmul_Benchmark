@@ -20,11 +20,12 @@
 # ncu --kernel-name regex:matmul --launch-skip 10 --launch-count 1 --set full \
 #     -o reporte python3 ../benchmark_fp16_fp16.py --mnk 1024,1024,8192 --no-save
 
-# # Métricas concretas
-# ncu --metrics sm__cycles_elapsed.avg,dram__throughput.avg.pct_of_peak_sustained_elapsed,\
-# sm__pipe_tensor_op_hmma_cycles_active.avg.pct_of_peak_sustained_elapsed \
-#     python3 ../benchmark_fp16_fp16.py --mnk 1024,1024,8192 --no-save
+# Métricas concretas
+ ncu --metrics sm__cycles_elapsed.avg,dram__throughput.avg.pct_of_peak_sustained_elapsed,\
+ sm__pipe_tensor_op_hmma_cycles_active.avg.pct_of_peak_sustained_elapsed \
+     python3 ../benchmark_fp16_fp16.py --mnk 4096,4096,4096 --no-save
 
+ ncu --metrics sm__cycles_elapsed.avg,dram__throughput.avg.pct_of_peak_sustained_elapsed, sm__pipe_tensor_op_hmma_cycles_active.avg.pct_of_peak_sustained_elapsed  ./benchmark_fp32 4096 4096 4096
 #
 # Los resultados NO se guardan en CSV (modo one-shot con --mnk).
 
