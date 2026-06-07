@@ -286,6 +286,21 @@ Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 | Square   | 1024  | 1024  | 1024  | 0.0428140783309936  | 50.1583528529542    | rtx4090_benchmark_jit_tf32      |
 | Fixed_K  | 1024  | 1024  | 8192  | 0.3617689514160156  | 47.48851198190316   | rtx4090_benchmark_jit_tf32      |
 
+
+## MMA Kernel Progression (FP16/FP16 → FP32)
+
+**Kernel comparison at 4096 × 4096 × 4096:**
+
+![MMA kernels 4096](/fp16_fp16_to_fp32/benchmarks/mma-matmul/plots/mma_kernels_tflops_4096.png)
+
+**Square matrices (full scaling):**
+
+![MMA kernels Square](/fp16_fp16_to_fp32/benchmarks/mma-matmul/plots/mma_kernels_tflops_square.png)
+
+**Fixed-K (K = 8192):**
+
+![MMA kernels Fixed_K](/fp16_fp16_to_fp32/benchmarks/mma-matmul/plots/mma_kernels_tflops_fixed_k.png)
+
 ## Results Eager
 
 ![Eager Memory](/fp16_fp16_to_fp16/images/python27_v1/eager_memory.png)
@@ -310,6 +325,8 @@ Fixed_K|8192|8192|8192|4.3406298828125|253.30692951493344|rtx4090_pytorch_eager|
 ![AOT Warp v2](/fp16_fp16_to_fp16/images/AOT_warp(v2).png)
 ![GPU Speed of Light AOT](/fp16_fp16_to_fp16/images/GPU_speedOfLight_aot.png)
 ![PM Sampling AOT](/fp16_fp16_to_fp16/images/PM_sampling_aot.png)
+
+
 
 
 Citation
