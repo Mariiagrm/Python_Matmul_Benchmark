@@ -201,40 +201,6 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ![results_fixed_k](https://github.com/Mariiagrm/Python_Matmul_Benchmark/blob/main/fp16_fp16_to_fp32/plots/compare_tflops_fixed_k.png)
 
-| Type | M | N | K | Time (ms) | TFLOPS | Mode |
-|------|---|---|---|-----------|--------|------|
-| Square | 16384 | 16384 | 16384 | 50.95 | 172.63 | rtx4090_torch_aoti_benchmark |
-| Fixed_K | 32768 | 32768 | 8192 | 102.01 | 172.45 | rtx4090_torch_aoti_benchmark |
-| Square | 32768 | 32768 | 32768 | 408.08 | 172.44 | rtx4090_torch_aoti_benchmark |
-| Fixed_K | 16384 | 16384 | 8192 | 25.53 | 172.27 | rtx4090_torch_aoti_benchmark |
-| Square | 8192 | 8192 | 8192 | 6.60 | 166.59 | benchmark_mma-matmul |
-| Fixed_K | 8192 | 8192 | 8192 | 6.60 | 166.59 | benchmark_mma-matmul |
-| Fixed_K | 32768 | 32768 | 8192 | 107.59 | 163.52 | rtx4090_pytorch_eager |
-| Fixed_K | 16384 | 16384 | 8192 | 26.90 | 163.49 | rtx4090_pytorch_eager |
-| Square | 32768 | 32768 | 32768 | 430.83 | 163.33 | rtx4090_pytorch_eager |
-| Square | 16384 | 16384 | 16384 | 53.91 | 163.17 | rtx4090_pytorch_eager |
-| Square | 16384 | 16384 | 16384 | 53.91 | 163.16 | benchmark_mma-matmul |
-| Square | 8192 | 8192 | 8192 | 6.79 | 162.03 | rtx4090_pytorch_eager |
-| Fixed_K | 8192 | 8192 | 8192 | 6.79 | 161.94 | rtx4090_pytorch_eager |
-| Fixed_K | 4096 | 4096 | 8192 | 1.71 | 160.38 | rtx4090_pytorch_eager |
-| Fixed_K | 16384 | 16384 | 8192 | 27.43 | 160.34 | benchmark_mma-matmul |
-| Square | 32768 | 32768 | 32768 | 438.97 | 160.30 | benchmark_mma-matmul |
-| Square | 4096 | 4096 | 4096 | 0.86 | 160.06 | rtx4090_pytorch_eager |
-| Fixed_K | 2048 | 2048 | 8192 | 0.43 | 160.05 | rtx4090_pytorch_eager |
-| Fixed_K | 4096 | 4096 | 8192 | 1.72 | 159.99 | rtx4090_torch_aoti_benchmark |
-| Square | 4096 | 4096 | 4096 | 0.86 | 159.06 | rtx4090_torch_aoti_benchmark |
-| Square | 8192 | 8192 | 8192 | 7.00 | 156.97 | rtx4090_torch_aoti_benchmark |
-| Fixed_K | 2048 | 2048 | 8192 | 0.44 | 156.71 | rtx4090_torch_aoti_benchmark |
-| Fixed_K | 8192 | 8192 | 8192 | 7.07 | 155.43 | rtx4090_torch_aoti_benchmark |
-| Fixed_K | 4096 | 4096 | 8192 | 1.77 | 155.30 | benchmark_mma-matmul |
-| Fixed_K | 32768 | 32768 | 8192 | 114.66 | 153.43 | benchmark_mma-matmul |
-| Square | 4096 | 4096 | 4096 | 0.90 | 153.16 | benchmark_mma-matmul |
-| Square | 2048 | 2048 | 2048 | 0.11 | 151.24 | rtx4090_pytorch_eager |
-| Fixed_K | 2048 | 2048 | 8192 | 0.46 | 147.92 | benchmark_mma-matmul |
-| Fixed_K | 1024 | 1024 | 8192 | 0.12 | 145.57 | rtx4090_pytorch_eager |
-| Square | 2048 | 2048 | 2048 | 0.12 | 141.63 | rtx4090_torch_aoti_benchmark |
-| Fixed_K | 1024 | 1024 | 8192 | 0.13 | 134.12 | rtx4090_torch_aoti_benchmark |
-| Square | 2048 | 2048 | 2048 | 0.15 | 117.29 | benchmark_mma-matmul |
 
 ## 📊 Second Version: FP16/FP16
 
@@ -262,13 +228,11 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ![MMA kernels Fixed_K](/fp16_fp16_to_fp32/plots/mma_kernels_tflops_fixed_k.png)
 
----
+# 📈 Performance Results - RTX 4090
 
-# 📈 Resultados de Rendimiento - RTX 4090
+## Reference Ceilings
 
-## Techos de Referencia
-
-| Configuración | Pico teórico (TFLOP/s) | Techo empírico CUTLASS (TFLOP/s) |
+| Configuration | Theoretical Peak (TFLOP/s) | CUTLASS Empirical Ceiling (TFLOP/s) |
 |--------------|----------------------|-------------------------------|
 | TF32 | 82.60 | 86.10 |
 | FP16→FP32 | 165.20 | 167.90 |
@@ -276,13 +240,13 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ---
 
-## Configuración TF32
+## TF32 Configuration
 
-*Nota: Configuración mediante `torch.set_float32_matmul_precision('high')` sobre operandos `torch.float32`.*
+*Note: Configuration using `torch.set_float32_matmul_precision('high')` on `torch.float32` operands.*
 
-### Modo Square (M=N=K)
+### Square Mode (M=N=K)
 
-| Tamaño (M) | Eager | JIT | AOT | Mejor / pico |
+| Size (M) | Eager | JIT | AOT | Best / peak |
 |-----------|-------|-----|-----|--------------|
 | 1,024 | 68.00 | 50.16 | 51.41 | 82.3% |
 | 2,048 | 77.77 | 64.63 | 70.82 | 94.2% |
@@ -291,9 +255,9 @@ To launch the complete benchmark suite, simply run the master script from the pr
 | 16,384 | 81.57 | 78.02 | 81.55 | 98.8% |
 | 32,768 | 81.67 | — | 81.67 | 98.9% |
 
-### Modo Fixed K (K=8,192)
+### Fixed K Mode (K=8,192)
 
-| Tamaño (M×N) | Eager | JIT | AOT |
+| Size (M×N) | Eager | JIT | AOT |
 |-------------|-------|-----|-----|
 | 1,024×1,024 | 77.29 | 47.49 | 70.47 |
 | 2,048×2,048 | 80.61 | 60.97 | 78.51 |
@@ -304,13 +268,13 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ---
 
-## Configuración FP16→FP32
+## FP16→FP32 Configuration
 
-*Nota: Precisión mixta con operandos `torch.float16` y acumulación en FP32. Configuración mediante `torch.backends.cuda.matmul.allow_fp16_accumulation = False`.*
+*Note: Mixed precision with `torch.float16` operands and FP32 accumulation. Configuration using `torch.backends.cuda.matmul.allow_fp16_accumulation = False`.*
 
-### Modo Square (M=N=K)
+### Square Mode (M=N=K)
 
-| Tamaño | Eager | JIT | AOT | Native CUDA | Spatters 3.1 | Mejor / pico |
+| Size | Eager | JIT | AOT | Native CUDA | Spatters 3.1 | Best / peak |
 |--------|-------|-----|-----|-------------|--------------|--------------|
 | 1,024 | 55.12 | 60.70 | 91.59 | 170.02 | — | 102.9% |
 | 2,048 | 150.66 | 76.08 | 122.35 | 169.97 | — | 102.9% |
@@ -319,9 +283,9 @@ To launch the complete benchmark suite, simply run the master script from the pr
 | 16,384 | 168.29 | 173.01 | 173.82 | 168.98 | 157.35 | 105.2% |
 | 32,768 | 166.81 | 172.10 | 172.58 | 168.98 | 157.66 | 104.5% |
 
-### Modo Fixed K (K=8,192)
+### Fixed K Mode (K=8,192)
 
-| Tamaño | Eager | JIT | AOT | Native CUDA | Spatters 3.1 |
+| Size | Eager | JIT | AOT | Native CUDA | Spatters 3.1 |
 |--------|-------|-----|-----|-------------|--------------|
 | 1,024×1,024 | 147.84 | 80.07 | 139.44 | 168.98 | 74.24 |
 | 2,048×2,048 | 169.81 | 84.13 | 157.44 | 168.20 | 152.18 |
@@ -332,13 +296,13 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ---
 
-## Configuración FP16→FP16
+## FP16→FP16 Configuration
 
-*Nota: Máximo throughput con operandos y acumulación en FP16. Configuración mediante `allow_fp16_accumulation = True` (PyTorch 2.7.0+).*
+*Note: Maximum throughput with FP16 operands and accumulation. Configuration using `allow_fp16_accumulation = True` (PyTorch 2.7.0+).*
 
-### Modo Square (M=N=K)
+### Square Mode (M=N=K)
 
-| Tamaño | Eager | JIT | AOT | Native CUDA | Spatters 3.3 | Mejor / pico |
+| Size | Eager | JIT | AOT | Native CUDA | Spatters 3.3 | Best / peak |
 |--------|-------|-----|-----|-------------|--------------|--------------|
 | 1,024 | 92.30 | 60.33 | 90.94 | 80.75 | 97.40 | 29.5% |
 | 2,048 | 286.84 | 244.89 | 253.85 | 277.31 | 207.13 | 86.8% |
@@ -347,12 +311,12 @@ To launch the complete benchmark suite, simply run the master script from the pr
 | 16,384 | 295.04 | 275.81 | 162.52* | 279.70 | 111.22** | 89.3% |
 | 32,768 | 299.30 | 287.01 | 298.83 | — | 110.53** | 90.6% |
 
-*\* Valor anómalo discutido en sección AOT results*  
-*\*\* Valor anómalo discutido en sección Spatters FP16→FP16*
+*\* Anomalous value discussed in AOT results section*  
+*\*\* Anomalous value discussed in Spatters FP16→FP16 section*
 
-### Modo Fixed K (K=8,192)
+### Fixed K Mode (K=8,192)
 
-| Tamaño | Eager | JIT | AOT | Native CUDA | Spatters 3.3 |
+| Size | Eager | JIT | AOT | Native CUDA | Spatters 3.3 |
 |--------|-------|-----|-----|-------------|--------------|
 | 1,024×1,024 | 230.84 | 180.81 | 230.62 | 217.10 | 119.23 |
 | 2,048×2,048 | 299.43 | 183.60 | 282.59 | 291.25 | 231.68 |
@@ -363,11 +327,11 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ---
 
-## Tiempos de Ejecución
+## Execution Times
 
-### Matrices 4,096³
+### 4,096³ Matrices
 
-| Implementación | TF32 | FP16→FP32 | FP16→FP16 |
+| Implementation | TF32 | FP16→FP32 | FP16→FP16 |
 |---------------|------|-----------|-----------|
 | PyTorch eager | 1.716 | 0.856 | 0.539 |
 | PyTorch JIT | 1.994 | 0.862 | 0.630 |
@@ -375,9 +339,9 @@ To launch the complete benchmark suite, simply run the master script from the pr
 | Native CUDA | — | 0.810 | 0.616 |
 | Spatters | — | 0.895 | 0.562 |
 
-### Matrices 16,384³
+### 16,384³ Matrices
 
-| Implementación | TF32 | FP16→FP32 | FP16→FP16 |
+| Implementation | TF32 | FP16→FP32 | FP16→FP16 |
 |---------------|------|-----------|-----------|
 | PyTorch eager | 107.84 | 52.27 | 29.81 |
 | PyTorch JIT | 112.74 | 50.84 | 31.89 |
@@ -385,15 +349,15 @@ To launch the complete benchmark suite, simply run the master script from the pr
 | Native CUDA | — | 52.05 | 31.45 |
 | Spatters | — | 55.90 | 79.08** |
 
-*\*\* Valor anómalo discutido en sección Spatters FP16→FP16*
+*\*\* Anomalous value discussed in Spatters FP16→FP16 section*
 
 ---
 
-## Eficiencia frente al Techo Empírico
+## Efficiency vs. Empirical Ceiling
 
-### Modo Square (M=N=K)
+### Square Mode (M=N=K)
 
-| Configuración | Implementación | 1,024 | 2,048 | 4,096 | 8,192 | 16,384 | 32,768 |
+| Configuration | Implementation | 1,024 | 2,048 | 4,096 | 8,192 | 16,384 | 32,768 |
 |--------------|---------------|-------|-------|-------|-------|--------|--------|
 | **TF32** | Eager | 79.0% | 90.3% | 93.0% | 94.3% | 94.7% | 94.9% |
 | | JIT | 58.3% | 75.1% | 80.1% | 86.7% | 90.6% | — |
@@ -409,12 +373,12 @@ To launch the complete benchmark suite, simply run the master script from the pr
 | | Native CUDA | 28.3% | 97.3% | 78.3% | 76.7% | 98.1% | — |
 | | Spatters 3.3 | 34.2% | 72.7% | 85.7% | 70.8% | 39.0%** | 38.8%** |
 
-*\* Valor anómalo discutido en sección AOT results*  
-*\*\* Valor anómalo discutido en sección Spatters FP16→FP16*
+*\* Anomalous value discussed in AOT results section*  
+*\*\* Anomalous value discussed in Spatters FP16→FP16 section*
 
-### Modo Fixed K (K=8,192)
+### Fixed K Mode (K=8,192)
 
-| Configuración | Implementación | 1,024 | 2,048 | 4,096 | 8,192 | 16,384 | 32,768 |
+| Configuration | Implementation | 1,024 | 2,048 | 4,096 | 8,192 | 16,384 | 32,768 |
 |--------------|---------------|-------|-------|-------|-------|--------|--------|
 | **TF32** | Eager | 89.8% | 93.6% | 94.0% | 94.3% | 94.4% | 94.5% |
 | | JIT | 55.1% | 70.8% | 80.3% | 86.7% | — | — |
@@ -432,7 +396,7 @@ To launch the complete benchmark suite, simply run the master script from the pr
 
 ---
 
-## Resultados Spatters - Benchmark MMA Matmul
+## Spatters Results - MMA Matmul Benchmark
 
 ### cuBLAS GemmEx (baseline)
 
@@ -582,8 +546,6 @@ To launch the complete benchmark suite, simply run the master script from the pr
 | k3.4 1-stage | Fixed_K | 8192 | 8192 | 8192 | 5.2500 | 209.43 |
 | k3.4 1-stage | Fixed_K | 16384 | 16384 | 8192 | 24.1400 | 182.19 |
 | k3.4 1-stage | Fixed_K | 32768 | 32768 | 8192 | 97.9400 | 179.62 |
-
----
 
 ## Results Eager
 
