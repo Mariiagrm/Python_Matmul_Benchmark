@@ -1,6 +1,5 @@
 Here are the fixed tables with proper Markdown formatting for your README. I've corrected the alignment, cleaned up the formatting issues, and organized the data properly:
 
-```markdown
 # 🚀 Extreme GEMM Optimization on RTX 4090 (Ada Lovelace)
 
 This repository documents a comprehensive study to achieve the peak performance of the Ada Lovelace architecture (RTX 4090) in matrix multiplication operations (GEMM).
@@ -54,83 +53,6 @@ Designed to maintain sustained arithmetic intensity. The internal dimension was 
 - NVIDIA CUTLASS: C++ template library for high-performance linear algebra operations (compiled from source for 80 and 89 architectures).
 - Python 3 and utilities (python3-dev, pip).
 
-## 📂 Project Structure
-
-```
-.
-    ├── benchmarks_executor.sh        # 🧠 Main entry point: orchestrates all benchmark executions
-    │
-    ├── fp16_fp16_to_fp16             # 🔬 Experiments: FP16 → FP16 precision pipeline
-    │   ├── benchmarks                # ⚙️ Core benchmark implementations
-    │   │   ├── benchmark_aot_compile.py   # AOT (Ahead-Of-Time) compilation benchmark
-    │   │   ├── benchmark_fp16             # Compiled binary for CUDA benchmark
-    │   │   ├── benchmark_fp16.cu          # CUDA kernel implementation (FP16)
-    │   │   ├── benchmark_fp16_fp16.py     # Python benchmark (FP16 → FP16)
-    │   │   ├── benchmark_torch_compile.py # Torch compile benchmark
-    │   │   ├── cuda_executor.sh           # Script to launch CUDA benchmarks
-    │   │   ├── log                       # Execution logs
-    │   │   └── torch_compile_debug       # Debug artifacts for torch.compile
-    │   │
-    │   ├── images                    # 🖼️ Generated images (plots, visual outputs)
-    │   ├── nvidia_nsight             # 📊 Profiling outputs (Nsight Systems/Compute)
-    │   ├── plots                     # 📈 Performance plots
-    │   │   ├── compare_tflops_fixed_k.png
-    │   │   └── compare_tflops_square.png
-    │   │
-    │   ├── results                   # 📄 Raw benchmark results (CSV format)
-    │   │   ├── benchmarkCompleto.csv
-    │   │   ├── rtx4090_benchmark_cuda.csv
-    │   │   ├── rtx4090_benchmark_jit.csv
-    │   │   ├── rtx4090_pytorch_eager.csv
-    │   │   └── rtx4090_torch_aoti_benchmark.csv
-    │   │
-    │   ├── unique_results            # 🧹 Filtered/processed benchmark results
-    │   │   ├── rtx4090_benchmark_jit.csv
-    │   │   ├── rtx4090_benchmark_jit_optimized.csv
-    │   │   ├── rtx4090_pytorch_eager_specific.csv
-    │   │   └── rtx4090_torch_aoti_benchmark.csv
-    │   │
-    │   ├── unitary_benchmarks        # 🧪 Isolated benchmarks for individual testing
-    │   │   ├── benchmark_aot_compile.py
-    │   │   ├── benchmark_fp16
-    │   │   ├── benchmark_fp16.cu
-    │   │   ├── benchmark_fp16_fp16.py
-    │   │   ├── benchmark_torch_compile.py
-    │   │   └── cuda_executor.sh
-    │   │
-    │   └── utils                     # 🛠️ Utility scripts
-    │       ├── plotCreate.py         # Plot generation
-    │       └── sortBenchmark.py      # Result sorting/processing
-    │
-    ├── fp16_fp16_to_fp32             # 🔬 Experiments: FP16 → FP32 precision pipeline
-    │   ├── analisis.md               # 📝 Analysis and notes for this configuration
-    │   │
-    │   ├── benchmarks                # ⚙️ Benchmark implementations
-    │   │   ├── benchmark_aot_compile.py
-    │   │   ├── benchmark_fp16
-    │   │   ├── benchmark_fp16.cu
-    │   │   ├── benchmark_fp16_fp32.py   # Python benchmark (FP16 → FP32)
-    │   │   ├── benchmark_torch_compile.py
-    │   │   ├── cuda_executor.sh
-    │   │   ├── log
-    │   │   └── mma-matmul            # 🧮 Advanced CUDA MMA experiments
-    │   │
-    │   ├── images                    # 🖼️ Generated images (plots, visual outputs)
-    │   ├── nvidia_nsight             # 📊 Profiling outputs (Nsight Systems/Compute)
-    │   ├── plots                     # 📈 Performance plots
-    │   ├── results                   # 📄 Raw benchmark results (CSV format)
-    │   ├── unique_results            # 🧹 Filtered/processed benchmark results
-    │   └── utils                     # 🛠️ Utility scripts
-    │
-    └── tf32                          # 🔬 Experiments: TF32 precision pipeline
-        ├── benchmarks                # ⚙️ Benchmark implementations
-        ├── images                    # 🖼️ Generated images (plots, visual outputs)
-        ├── nvidia_nsight             # 📊 Profiling outputs (Nsight Systems/Compute)
-        ├── plots                     # 📈 Performance plots
-        ├── results                   # 📄 Raw benchmark results (CSV format)
-        ├── unique_results            # 🧹 Filtered/processed benchmark results
-        └── utils                     # 🛠️ Utility scripts
-```
 
 ## 🚀 How to Run
 
@@ -150,7 +72,7 @@ To launch the complete benchmark suite, simply run the master script from the pr
   - `tf32` → TensorFloat-32 (10-bit mantissa, 8-bit exponent) on Tensor Cores
 - Example:
   ```bash
-  ./script.sh --a fp32
+  ./benchmarks_executor.sh --a fp32
   ```
 
 **`--profile`**
@@ -158,7 +80,7 @@ To launch the complete benchmark suite, simply run the master script from the pr
 - Behavior: Activates profiling tools such as Nsight Systems and Nsight Compute.
 - Example:
   ```bash
-  ./script.sh --profile
+  ./benchmarks_executor.sh --profile
   ```
 
 **`--sb`**
@@ -166,14 +88,14 @@ To launch the complete benchmark suite, simply run the master script from the pr
 - Behavior: Prevents benchmarks from running (useful for faster runs or debugging).
 - Example:
   ```bash
-  ./script.sh --sb
+  ./benchmarks_executor.sh --sb
   ```
 
 **`-h`**
 - Description: Displays help information.
 - Example:
   ```bash
-  ./script.sh --help
+  ./benchmarks_executor.sh --help
   ```
 
 ## 🧪 Strategies Evaluated
@@ -743,7 +665,7 @@ To launch the complete benchmark suite, simply run the master script from the pr
   - `tf32` → TensorFloat-32 (10-bit mantissa, 8-bit exponent) on Tensor Cores
 - Example:
   ```bash
-  ./script.sh --a fp32
+  ./benchmarks_executor.sh --a fp32
   ```
 
 **`--profile`**
@@ -751,7 +673,7 @@ To launch the complete benchmark suite, simply run the master script from the pr
 - Behavior: Activates profiling tools such as Nsight Systems and Nsight Compute.
 - Example:
   ```bash
-  ./script.sh --profile
+  ./benchmarks_executor.sh --profile
   ```
 
 **`--sb`**
@@ -759,14 +681,14 @@ To launch the complete benchmark suite, simply run the master script from the pr
 - Behavior: Prevents benchmarks from running (useful for faster runs or debugging).
 - Example:
   ```bash
-  ./script.sh --sb
+  ./benchmarks_executor.sh --sb
   ```
 
 **`-h`**
 - Description: Displays help information.
 - Example:
   ```bash
-  ./script.sh --help
+  ./benchmarks_executor.sh --help
   ```
 
 ## 🧪 Strategies Evaluated
