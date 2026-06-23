@@ -1,5 +1,3 @@
-Here are the fixed tables with proper Markdown formatting for your README. I've corrected the alignment, cleaned up the formatting issues, and organized the data properly:
-
 # 🚀 Extreme GEMM Optimization on RTX 4090 (Ada Lovelace)
 
 This repository documents a comprehensive study to achieve the peak performance of the Ada Lovelace architecture (RTX 4090) in matrix multiplication operations (GEMM).
